@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public virtual DbSet<Products> Products { get; set; }
     public virtual DbSet<Sales> Sales { get; set; }
     public virtual DbSet<Users> Users { get; set; }
+    public virtual DbSet<Sessions> Sessions { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -24,10 +25,13 @@ public class AppDbContext : DbContext
             .HasSentinel(UserRole.Default);
         modelBuilder.Entity<Machines>()
             .Property(u => u.EntryDate)
-            .HasDefaultValueSql("now()");
+            .HasDefaultValueSql("now() at time zone 'utc'");
         modelBuilder.Entity<Sales>()
             .Property(u => u.Date)
-            .HasDefaultValueSql("now()");
+            .HasDefaultValueSql("now() at time zone 'utc'");
+        modelBuilder.Entity<Sessions>()
+            .Property(u => u.CreatedAt)
+            .HasDefaultValueSql("now() at time zone 'utc'");
         
         // Ограничения
         modelBuilder.Entity<Machines>()

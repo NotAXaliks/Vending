@@ -1,9 +1,11 @@
-using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendingApi.Models;
 
+[Index(nameof(Email), IsUnique = true)]
+[Index(nameof(Phone), IsUnique = true)]
 public class Users
 {
     [Key]
@@ -26,7 +28,7 @@ public class Users
     
     [MinLength(5)]
     [MaxLength(50)]
-    public required string? Email { get; set; }
+    public required string Email { get; set; }
     
     [MinLength(6)]
     [MaxLength(20)]
@@ -37,7 +39,8 @@ public class Users
     [MinLength(60)]
     [MaxLength(60)] // BCrypt
     public required string Password { get; set; }
-    
+
+    public virtual ICollection<Sessions> Sessions { get; set; } = [];
     public virtual ICollection<Maintenances> Maintenances { get; set; } = [];
     public virtual ICollection<Machines> Inspections { get; set; } = [];
 }

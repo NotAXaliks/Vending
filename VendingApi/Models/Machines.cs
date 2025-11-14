@@ -37,21 +37,12 @@ public class Machines
     [MaxLength(100)]
     public required string Manufacter { get; set; }
     
-    [Column(TypeName = "timestamp")]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public DateTime EntryDate { get; set; }
-    
-    [Column(TypeName = "timestamp")]
-    public DateTime ManufactureDate { get; set; }
-    
-    [Column(TypeName = "timestamp")]
-    public DateTime StartDate { get; set; }
-    
-    [Column(TypeName = "timestamp")]
-    public DateTime LastInspectionDate { get; set; }
-    
-    [Column(TypeName = "timestamp")]
-    public DateTime NextMaintenanceDate { get; set; }
+    public DateTimeOffset EntryDate { get; set; }
+    public DateTimeOffset ManufactureDate { get; set; }
+    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset LastInspectionDate { get; set; }
+    public DateTimeOffset NextMaintenanceDate { get; set; }
     
     [Range(0, int.MaxValue)]
     public int InspectionIntervalMonths { get; set; }

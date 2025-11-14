@@ -11,8 +11,7 @@ public class Maintenances
     
     public int MachineId { get; set; }
     
-    [Column(TypeName = "timestamp")]
-    public DateTime Date { get; set; }
+    public DateTimeOffset Date { get; set; }
     
     [MaxLength(1500)]
     public required string Description { get; set; }

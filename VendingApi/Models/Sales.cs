@@ -17,8 +17,8 @@ public class Sales
     
     public decimal Amount { get; set; }
     
-    [Column(TypeName = "timestamp")]
-    public DateTime Date { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public DateTimeOffset Date { get; set; }
     
     public PaymentMethod PaymentMethod  { get; set; }
     
