@@ -1,0 +1,135 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:VendingDesktop.Views"
+        xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Svg.Controls.Avalonia"
+        MinWidth="1000"
+        MinHeight="620"
+        Width="1450"
+        Height="950"
+        d:DesignWidth="800"
+        d:DesignHeight="450"
+        WindowStartupLocation="CenterScreen"
+        mc:Ignorable="d"
+        x:Class="VendingDesktop.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Title="MainWindow">
+
+
+    <Grid RowDefinitions="50 *">
+        <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto">
+            <svg:Svg Grid.Column="0" Path="avares://VendingDesktop/Assets/YoutubeLogo.svg" Width="60" Margin="10 0 0 0" />
+
+            <Border Name="UserMenuButton"
+                    Grid.Column="2"
+                    Padding="10"
+                    BorderBrush="LightGray"
+                    BorderThickness="1 0 0 0"
+                    Cursor="Hand"
+                    PointerPressed="UserMenuButton_OnPointerPressed">
+                <StackPanel>
+                    <Popup Name="MenuPopup"
+                           Placement="Bottom"
+                           PlacementTarget="{Binding #UserMenuButton}"
+                           IsLightDismissEnabled="True"
+                           Width="{Binding #UserMenuButton.Bounds.Width}">
+                        <Border Background="White" Padding="10" BorderBrush="LightGray" BorderThickness="0 1 0 0 ">
+                            <StackPanel Spacing="15">
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Cursor="Hand">
+                                    <svg:Svg Path="avares://VendingDesktop/Assets/Account.svg" Width="20" />
+                                    <TextBlock Text="Профиль" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Cursor="Hand">
+                                    <svg:Svg Path="avares://VendingDesktop/Assets/Lock.svg" Width="20" />
+                                    <TextBlock Text="Настройки" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal"
+                                            Spacing="8"
+                                            Cursor="Hand">
+                                    <svg:Svg Path="avares://VendingDesktop/Assets/Logout.svg" Width="20" />
+                                    <TextBlock Text="Выход" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Popup>
+
+                    <StackPanel Orientation="Horizontal" Spacing="10">
+                        <svg:Svg Path="avares://VendingDesktop/Assets/Russia.svg" Width="42" />
+                        <StackPanel>
+                            <TextBlock Text="Автоматoв А.А." FontWeight="Bold" Foreground="Black" />
+                            <TextBlock Text="Администратор" FontSize="12" Foreground="Gray" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+
+        <Grid Grid.Row="1" Background="Aquamarine">
+            <SplitView Name="PageList"
+                       IsPaneOpen="True"
+                       DisplayMode="CompactInline"
+                       OpenPaneLength="300"
+                       CompactPaneLength="60"
+                       PaneBackground="#1d2127">
+
+                <SplitView.Pane>
+                    <Grid RowDefinitions="50 *" Margin="10 0 0 0">
+                        <!-- Заголовок -->
+                        <Grid Grid.Row="0">
+                            <TextBlock Text="Навигация"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       FontSize="18"
+                                       Foreground="White"
+                                       IsVisible="{Binding IsPaneOpen, ElementName=PageList}" />
+
+                            <Button HorizontalAlignment="Right"
+                                    HorizontalContentAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    CornerRadius="0"
+                                    Background="#171717"
+                                    Click="PageListButtonClick">
+                                <svg:Svg Path="avares://VendingDesktop/Assets/List.svg" Width="30" />
+                            </Button>
+                        </Grid>
+
+                        <ItemsControl Grid.Row="1" ItemsSource="{Binding MenuItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate x:DataType="vm:MenuItem">
+                                    <Grid Margin="0 10 0 0" ColumnDefinitions="*,Auto">
+                                        <StackPanel Orientation="Horizontal" Spacing="6" Grid.Column="0">
+                                            <svg:Svg Path="{Binding Icon}" Width="30" />
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="16"
+                                                       Foreground="White"
+                                                       VerticalAlignment="Center"
+                                                       IsVisible="{Binding IsPaneOpen, ElementName=PageList}" />
+                                        </StackPanel>
+
+                                        <svg:Svg Path="avares://VendingDesktop/Assets/ArrowDown.svg"
+                                                 Width="20"
+                                                 Grid.Column="1"
+                                                 VerticalAlignment="Center">
+                                            <svg:Svg.IsVisible>
+                                                <MultiBinding>
+                                                    <Binding Path="HasArrow" />
+                                                    <Binding Path="IsPaneOpen" ElementName="PageList" />
+                                                </MultiBinding>
+                                            </svg:Svg.IsVisible>
+                                        </svg:Svg>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </SplitView.Pane>
+            </SplitView>
+        </Grid>
+    </Grid>
+
+</Window>
