@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using VendingDesktop.ViewModels;
 
 namespace VendingDesktop.Views;
 
@@ -8,7 +9,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainWindowViewModel(); // <-- вот здесь
+        DataContext = new MainWindowViewModel();
     }
 
     private void UserMenuButton_OnPointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
@@ -16,8 +17,8 @@ public partial class MainWindow : Window
         MenuPopup.IsOpen = !MenuPopup.IsOpen;
     }
 
-    private void PageListButtonClick(object? sender, RoutedEventArgs e)
+    private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
-        PageList.IsPaneOpen = !PageList.IsPaneOpen;
+        throw new System.NotImplementedException();
     }
 }

@@ -2,7 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:vm="clr-namespace:VendingDesktop.Views"
+        xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
         xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Svg.Controls.Avalonia"
         MinWidth="1000"
         MinHeight="620"
@@ -15,7 +15,6 @@
         x:Class="VendingDesktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="MainWindow">
-
 
     <Grid RowDefinitions="50 *">
         <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto">
@@ -69,67 +68,89 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Row="1" Background="Aquamarine">
-            <SplitView Name="PageList"
-                       IsPaneOpen="True"
-                       DisplayMode="CompactInline"
-                       OpenPaneLength="300"
-                       CompactPaneLength="60"
-                       PaneBackground="#1d2127">
+        <SplitView Grid.Row="1" IsPaneOpen="{Binding IsMenuOpen}"
+                   DisplayMode="CompactInline"
+                   OpenPaneLength="300"
+                   CompactPaneLength="50"
+                   PaneBackground="#1d2127">
 
-                <SplitView.Pane>
-                    <Grid RowDefinitions="50 *" Margin="10 0 0 0">
-                        <!-- Заголовок -->
-                        <Grid Grid.Row="0">
-                            <TextBlock Text="Навигация"
-                                       HorizontalAlignment="Left"
-                                       VerticalAlignment="Center"
-                                       FontSize="18"
-                                       Foreground="White"
-                                       IsVisible="{Binding IsPaneOpen, ElementName=PageList}" />
+            <!-- https://www.youtube.com/watch?v=UDbKVheMBY8 -->
+            <SplitView.Pane>
+                <StackPanel>
+                    <Grid Margin="15 0 5 0" Height="50">
+                        <TextBlock Text="Навигация"
+                                   HorizontalAlignment="Left"
+                                   VerticalAlignment="Center"
+                                   FontSize="18"
+                                   Foreground="White"
+                                   IsVisible="{Binding IsMenuOpen}"/>
 
-                            <Button HorizontalAlignment="Right"
-                                    HorizontalContentAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    CornerRadius="0"
-                                    Background="#171717"
-                                    Click="PageListButtonClick">
-                                <svg:Svg Path="avares://VendingDesktop/Assets/List.svg" Width="30" />
-                            </Button>
-                        </Grid>
-
-                        <ItemsControl Grid.Row="1" ItemsSource="{Binding MenuItems}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate x:DataType="vm:MenuItem">
-                                    <Grid Margin="0 10 0 0" ColumnDefinitions="*,Auto">
-                                        <StackPanel Orientation="Horizontal" Spacing="6" Grid.Column="0">
-                                            <svg:Svg Path="{Binding Icon}" Width="30" />
-                                            <TextBlock Text="{Binding Title}"
-                                                       FontSize="16"
-                                                       Foreground="White"
-                                                       VerticalAlignment="Center"
-                                                       IsVisible="{Binding IsPaneOpen, ElementName=PageList}" />
-                                        </StackPanel>
-
-                                        <svg:Svg Path="avares://VendingDesktop/Assets/ArrowDown.svg"
-                                                 Width="20"
-                                                 Grid.Column="1"
-                                                 VerticalAlignment="Center">
-                                            <svg:Svg.IsVisible>
-                                                <MultiBinding>
-                                                    <Binding Path="HasArrow" />
-                                                    <Binding Path="IsPaneOpen" ElementName="PageList" />
-                                                </MultiBinding>
-                                            </svg:Svg.IsVisible>
-                                        </svg:Svg>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
+                        <Button HorizontalAlignment="Right"
+                                HorizontalContentAlignment="Center"
+                                VerticalAlignment="Center"
+                                CornerRadius="0"
+                                Background="Transparent"
+                                Command="{Binding ToggleMenuCommand}">
+                            <PathIcon Data="{StaticResource ListIcon}" Height="24" Width="24" />
+                        </Button>
                     </Grid>
-                </SplitView.Pane>
-            </SplitView>
-        </Grid>
+                    <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate DataType="vm:ListItemTemplate">
+                                <StackPanel Orientation="Horizontal" Spacing="6">
+                                    <PathIcon Data="{Binding Icon}" Height="20" Width="20" Margin="5 0 10 0"></PathIcon>
+                                    <TextBlock Text="{Binding Label}"
+                                               FontSize="16"
+                                               VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
+                <!-- <Grid RowDefinitions="50 *" Margin="10 0 0 0"> -->
+                <!-- Заголовок -->
+                <!-- -->
+                <!--     <ItemsControl Grid.Row="1" ItemsSource="{Binding MenuItems}"> -->
+                <!--         <ItemsControl.ItemTemplate> -->
+                <!--             <DataTemplate x:DataType="MenuItem"> -->
+                <!--                 <Grid Margin="0 10 0 0" ColumnDefinitions="*,Auto"> -->
+                <!--                     <StackPanel Orientation="Horizontal" Spacing="6" Grid.Column="0"> -->
+                <!--                         <svg:Svg Path="{Binding Icon}" Width="30" /> -->
+                <!--                         <TextBlock Text="{Binding Title}" -->
+                <!--                                    FontSize="16" -->
+                <!--                                    Foreground="White" -->
+                <!--                                    VerticalAlignment="Center" -->
+                <!--                                    IsVisible="{Binding IsPaneOpen, ElementName=PageList}" /> -->
+                <!--                     </StackPanel> -->
+                <!-- -->
+                <!--                     <svg:Svg Path="avares://VendingDesktop/Assets/ArrowDown.svg" -->
+                <!--                              Width="20" -->
+                <!--                              Grid.Column="1" -->
+                <!--                              VerticalAlignment="Center"> -->
+                <!--                         <svg:Svg.IsVisible> -->
+                <!--                             <MultiBinding> -->
+                <!--                                 <Binding Path="HasArrow" /> -->
+                <!--                                 <Binding Path="IsPaneOpen" ElementName="PageList" /> -->
+                <!--                             </MultiBinding> -->
+                <!--                         </svg:Svg.IsVisible> -->
+                <!--                     </svg:Svg> -->
+                <!--                 </Grid> -->
+                <!--             </DataTemplate> -->
+                <!--         </ItemsControl.ItemTemplate> -->
+                <!--     </ItemsControl> -->
+                <!-- </Grid> -->
+            </SplitView.Pane>
+
+            <SplitView.Content>
+                <StackPanel>
+                    <Border Background="#171717" Height="50">
+                    </Border>
+                    <Border Background="DarkGray">
+                        <TransitioningContentControl Content="{Binding CurrentPage}" />
+                    </Border>
+                </StackPanel>
+            </SplitView.Content>
+        </SplitView>
     </Grid>
 
 </Window>
