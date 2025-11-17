@@ -87,21 +87,55 @@
                             <PathIcon Data="{StaticResource List}" Height="30" Width="30" />
                         </Button>
                     </Grid>
-                    <ListBox ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPageListItem}"
-                             Background="Transparent">
-                        <ListBox.ItemTemplate>
+
+                    <ItemsControl ItemsSource="{Binding Pages}" Margin="10 0 0 0">
+                        <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="vm:PageListItemTemplate">
-                                <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <PathIcon Data="{Binding Icon}" Height="20" Width="20" Margin="5 0 10 0"
-                                              Foreground="Gray" />
-                                    <TextBlock Text="{Binding Label}"
-                                               FontSize="16" Foreground="Gray"
-                                               VerticalAlignment="Center" />
-                                    <PathIcon Data=""></PathIcon>
+                                <StackPanel>
+                                    <!-- Страница в списке -->
+                                    <Border Padding="5 8" Cursor="Hand" PointerPressed="PageItem_PointerPressed">
+                                        <Grid>
+                                            <StackPanel Orientation="Horizontal" Spacing="10">
+                                                <PathIcon Data="{Binding Icon}" Height="20" Width="20"
+                                                          Foreground="Gray" />
+                                                <TextBlock Text="{Binding Label}"
+                                                           FontSize="16" Foreground="Gray"
+                                                           VerticalAlignment="Center" />
+                                            </StackPanel>
+
+                                            <!-- Стрелка вниз при наличии детей -->
+                                            <PathIcon Data="{StaticResource ArrowDown}"
+                                                      Height="14" Width="14"
+                                                      IsVisible="{Binding HasChildren}"
+                                                      HorizontalAlignment="Right"
+                                                      Margin="0 0 10 0">
+                                            </PathIcon>
+                                        </Grid>
+                                    </Border>
+
+                                    <!-- Дочерние страницы -->
+                                    <ItemsControl ItemsSource="{Binding Children}"
+                                                  IsVisible="{Binding IsExpanded}"
+                                                  Margin="20 0 0 0">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate DataType="vm:PageListItemTemplate">
+                                                <Border Padding="5 5" Cursor="Hand" Background="Transparent"
+                                                        PointerPressed="ChildPageItem_PointerPressed">
+                                                    <StackPanel Orientation="Horizontal" Spacing="10">
+                                                        <PathIcon Data="{Binding Icon}" Height="18" Width="18"
+                                                                  Foreground="Gray" />
+                                                        <TextBlock Text="{Binding Label}"
+                                                                   FontSize="14" Foreground="Gray"
+                                                                   VerticalAlignment="Center" />
+                                                    </StackPanel>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
                                 </StackPanel>
                             </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </StackPanel>
             </SplitView.Pane>
 
