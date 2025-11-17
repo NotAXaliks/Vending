@@ -33,27 +33,19 @@
                            PlacementTarget="{Binding #UserMenuButton}"
                            IsLightDismissEnabled="True"
                            Width="{Binding #UserMenuButton.Bounds.Width}">
-                        <Border Background="White" Padding="10" BorderBrush="LightGray" BorderThickness="0 1 0 0 ">
-                            <StackPanel Spacing="15">
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8"
-                                            Cursor="Hand">
-                                    <svg:Svg Path="avares://VendingDesktop/Assets/Account.svg" Width="20" />
-                                    <TextBlock Text="Профиль" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8"
-                                            Cursor="Hand">
-                                    <svg:Svg Path="avares://VendingDesktop/Assets/Lock.svg" Width="20" />
-                                    <TextBlock Text="Настройки" />
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal"
-                                            Spacing="8"
-                                            Cursor="Hand">
-                                    <svg:Svg Path="avares://VendingDesktop/Assets/Logout.svg" Width="20" />
-                                    <TextBlock Text="Выход" />
-                                </StackPanel>
-                            </StackPanel>
+                        <Border Background="White" BorderBrush="LightGray" BorderThickness="0 1 0 0">
+                            <ListBox ItemsSource="{Binding AccountPages}" Background="Transparent">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate DataType="vm:AccountPageListItemTemplate">
+                                        <StackPanel Orientation="Horizontal" Spacing="8">
+                                            <PathIcon Data="{Binding Icon}" Height="20" Width="20" />
+                                            <TextBlock Text="{Binding Label}"
+                                                       FontSize="14"
+                                                       VerticalAlignment="Center" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
                         </Border>
                     </Popup>
 
@@ -77,73 +69,54 @@
             <!-- https://www.youtube.com/watch?v=UDbKVheMBY8 -->
             <SplitView.Pane>
                 <StackPanel>
-                    <Grid Margin="15 0 5 0" Height="50">
+                    <Grid Height="50" Background="#171717">
                         <TextBlock Text="Навигация"
                                    HorizontalAlignment="Left"
                                    VerticalAlignment="Center"
                                    FontSize="18"
                                    Foreground="White"
-                                   IsVisible="{Binding IsMenuOpen}"/>
+                                   Margin="10 0 0 0"
+                                   IsVisible="{Binding IsMenuOpen}" />
 
                         <Button HorizontalAlignment="Right"
                                 HorizontalContentAlignment="Center"
                                 VerticalAlignment="Center"
                                 CornerRadius="0"
                                 Background="Transparent"
-                                Command="{Binding ToggleMenuCommand}">
-                            <PathIcon Data="{StaticResource ListIcon}" Height="24" Width="24" />
+                                Command="{Binding TogglePageListCommand}">
+                            <PathIcon Data="{StaticResource List}" Height="30" Width="30" />
                         </Button>
                     </Grid>
-                    <ListBox ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedListItem}">
+                    <ListBox ItemsSource="{Binding Pages}" SelectedItem="{Binding SelectedPageListItem}"
+                             Background="Transparent">
                         <ListBox.ItemTemplate>
-                            <DataTemplate DataType="vm:ListItemTemplate">
+                            <DataTemplate DataType="vm:PageListItemTemplate">
                                 <StackPanel Orientation="Horizontal" Spacing="6">
-                                    <PathIcon Data="{Binding Icon}" Height="20" Width="20" Margin="5 0 10 0"></PathIcon>
+                                    <PathIcon Data="{Binding Icon}" Height="20" Width="20" Margin="5 0 10 0"
+                                              Foreground="Gray" />
                                     <TextBlock Text="{Binding Label}"
-                                               FontSize="16"
+                                               FontSize="16" Foreground="Gray"
                                                VerticalAlignment="Center" />
+                                    <PathIcon Data=""></PathIcon>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                 </StackPanel>
-                <!-- <Grid RowDefinitions="50 *" Margin="10 0 0 0"> -->
-                <!-- Заголовок -->
-                <!-- -->
-                <!--     <ItemsControl Grid.Row="1" ItemsSource="{Binding MenuItems}"> -->
-                <!--         <ItemsControl.ItemTemplate> -->
-                <!--             <DataTemplate x:DataType="MenuItem"> -->
-                <!--                 <Grid Margin="0 10 0 0" ColumnDefinitions="*,Auto"> -->
-                <!--                     <StackPanel Orientation="Horizontal" Spacing="6" Grid.Column="0"> -->
-                <!--                         <svg:Svg Path="{Binding Icon}" Width="30" /> -->
-                <!--                         <TextBlock Text="{Binding Title}" -->
-                <!--                                    FontSize="16" -->
-                <!--                                    Foreground="White" -->
-                <!--                                    VerticalAlignment="Center" -->
-                <!--                                    IsVisible="{Binding IsPaneOpen, ElementName=PageList}" /> -->
-                <!--                     </StackPanel> -->
-                <!-- -->
-                <!--                     <svg:Svg Path="avares://VendingDesktop/Assets/ArrowDown.svg" -->
-                <!--                              Width="20" -->
-                <!--                              Grid.Column="1" -->
-                <!--                              VerticalAlignment="Center"> -->
-                <!--                         <svg:Svg.IsVisible> -->
-                <!--                             <MultiBinding> -->
-                <!--                                 <Binding Path="HasArrow" /> -->
-                <!--                                 <Binding Path="IsPaneOpen" ElementName="PageList" /> -->
-                <!--                             </MultiBinding> -->
-                <!--                         </svg:Svg.IsVisible> -->
-                <!--                     </svg:Svg> -->
-                <!--                 </Grid> -->
-                <!--             </DataTemplate> -->
-                <!--         </ItemsControl.ItemTemplate> -->
-                <!--     </ItemsControl> -->
-                <!-- </Grid> -->
             </SplitView.Pane>
 
             <SplitView.Content>
                 <StackPanel>
                     <Border Background="#171717" Height="50">
+                        <Grid Margin="10 0 10 0">
+                            <TextBlock VerticalAlignment="Center" FontSize="24" Foreground="White"
+                                       HorizontalAlignment="Left">
+                                ООО Торговые автоматы
+                            </TextBlock>
+
+                            <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="16"
+                                       Text="{Binding SelectedPageListItem.Label}" Foreground="Gray" />
+                        </Grid>
                     </Border>
                     <Border Background="DarkGray">
                         <TransitioningContentControl Content="{Binding CurrentPage}" />

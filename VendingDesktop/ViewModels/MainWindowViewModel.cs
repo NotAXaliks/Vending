@@ -9,11 +9,11 @@ namespace VendingDesktop.ViewModels;
 
 public class MainWindowViewModel : ViewModelBase
 {
-    private bool _isMenuOpen = true;
+    private bool _isPageListOpen = true;
     public bool IsMenuOpen
     {
-        get => _isMenuOpen;
-        set => SetProperty(ref _isMenuOpen, value);
+        get => _isPageListOpen;
+        set => SetProperty(ref _isPageListOpen, value);
     }
 
     private ViewModelBase _currentPage = new MainPageViewModel();
@@ -23,40 +23,72 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _currentPage, value);
     }
 
-    private ListItemTemplate? _selectedListItem;
-    public ListItemTemplate? SelectedListItem
+    private PageListItemTemplate? _selectedPageListItem;
+    public PageListItemTemplate? SelectedPageListItem
     {
-        get => _selectedListItem;
+        get => _selectedPageListItem;
         set
         {
-            if (SetProperty(ref _selectedListItem, value))
+            if (SetProperty(ref _selectedPageListItem, value))
+                SelectPage();
+        }
+    }
+    
+    private AccountPageListItemTemplate? _selectedAccountPageListItem;
+    public AccountPageListItemTemplate? SelectedAccountPageListItem
+    {
+        get => _selectedAccountPageListItem;
+        set
+        {
+            if (SetProperty(ref _selectedAccountPageListItem, value))
                 SelectPage();
         }
     }
 
-    public ObservableCollection<ListItemTemplate> Items { get; set; } =
+    public ObservableCollection<AccountPageListItemTemplate> AccountPages { get; set; } =
     [
-        new ListItemTemplate("Главная", typeof(MainPageViewModel), "Search"),
-        new ListItemTemplate("Монитор ТА", typeof(MonitorPageViewModel), "Monitor")
+        new AccountPageListItemTemplate("Мой профиль", "Account"),
+        new AccountPageListItemTemplate("Мои сессии", "Lock"),
+        new AccountPageListItemTemplate("Выход", "Logout")
+    ];
+        
+    public ObservableCollection<PageListItemTemplate> Pages { get; set; } =
+    [
+        new PageListItemTemplate("Главная", typeof(MainPageViewModel), "Search"),
+        new PageListItemTemplate("Монитор ТА", typeof(MonitorPageViewModel), "Monitor")
     ];
 
     private void SelectPage()
     {
-        if (SelectedListItem == null)
+        if (SelectedPageListItem == null)
             return;
 
-        CurrentPage = (ViewModelBase)Activator.CreateInstance(SelectedListItem.ModelType)!;
+        CurrentPage = (ViewModelBase)Activator.CreateInstance(SelectedPageListItem.ModelType)!;
     }
 
-    public void ToggleMenuCommand()
+    public void TogglePageListCommand()
     {
         IsMenuOpen = !IsMenuOpen;
     }
 }
 
-public class ListItemTemplate
+public class AccountPageListItemTemplate
 {
-    public ListItemTemplate(string label, Type type, string icon)
+    public AccountPageListItemTemplate(string label, string icon)
+    {
+        Label = label;
+        
+        Application.Current!.TryFindResource(icon, out var res);
+        Icon = (StreamGeometry)res!;
+    }
+    
+    public string Label { get; set; }
+    public StreamGeometry Icon { get; set; }
+}
+
+public class PageListItemTemplate
+{
+    public PageListItemTemplate(string label, Type type, string icon)
     {
         ModelType = type;
         Label = label;

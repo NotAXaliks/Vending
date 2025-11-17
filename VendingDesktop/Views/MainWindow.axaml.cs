@@ -16,9 +16,4 @@ public partial class MainWindow : Window
     {
         MenuPopup.IsOpen = !MenuPopup.IsOpen;
     }
-
-    private void SelectingItemsControl_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
 }
