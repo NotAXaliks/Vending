@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Avalonia;
 using Avalonia.Controls;
@@ -31,31 +32,60 @@ public class MainWindowViewModel : ViewModelBase
         get => _selectedPageListItem;
         private set => SetProperty(ref _selectedPageListItem, value);
     }
-    
+
     public void SelectPage(PageListItemTemplate item)
     {
-        // Закрываем все открытые ветки, кроме текущей ветки
-        foreach (var page in Pages)
-            CloseAllExcept(page, item);
+        // Находим путь от одного из корней
+        List<PageListItemTemplate>? path = null;
+
+        foreach (var root in Pages)
+        {
+            var temp = new List<PageListItemTemplate>();
+            if (FindPath(root, item, temp))
+            {
+                path = temp;
+                break;
+            }
+        }
+
+        if (path == null) return;
+
+        var allowed = new HashSet<PageListItemTemplate>(path);
+
+        // Закрываем все страницы, кроме пути
+        foreach (var root in Pages)
+            CloseAllExceptPath(root, allowed);
 
         SelectedPageListItem = item;
 
-        // Открываем страницу только если нет детей
         if (!item.HasChildren)
-        {
             CurrentPage = (ViewModelBase)Activator.CreateInstance(item.ModelType)!;
-        }
     }
 
-    private void CloseAllExcept(PageListItemTemplate item, PageListItemTemplate? except)
+    private void CloseAllExceptPath(PageListItemTemplate item, HashSet<PageListItemTemplate> allowed)
     {
-        if (ReferenceEquals(item, except))
-            return;
-
-        item.IsExpanded = false;
+        item.IsExpanded = allowed.Contains(item);
 
         foreach (var child in item.Children)
-            CloseAllExcept(child, except);
+            CloseAllExceptPath(child, allowed);
+    }
+
+
+    private bool FindPath(PageListItemTemplate root, PageListItemTemplate target, List<PageListItemTemplate> path)
+    {
+        path.Add(root);
+
+        if (ReferenceEquals(root, target))
+            return true;
+
+        foreach (var child in root.Children)
+        {
+            if (FindPath(child, target, path))
+                return true;
+        }
+
+        path.RemoveAt(path.Count - 1);
+        return false;
     }
 
     private AccountPageListItemTemplate? _selectedAccountPageListItem;
@@ -135,6 +165,7 @@ public class PageListItemTemplate : ViewModelBase
     public ObservableCollection<PageListItemTemplate> Children { get; set; } = [];
 
     private bool _isExpanded;
+
     public bool IsExpanded
     {
         get => _isExpanded;

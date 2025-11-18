@@ -2,12 +2,13 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:cv="clr-namespace:VendingDesktop.Converters"
         xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
         xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Svg.Controls.Avalonia"
         MinWidth="1000"
         MinHeight="620"
-        Width="1450"
-        Height="950"
+        Width="1400"
+        Height="850"
         d:DesignWidth="800"
         d:DesignHeight="450"
         WindowStartupLocation="CenterScreen"
@@ -16,17 +17,19 @@
         x:DataType="vm:MainWindowViewModel"
         Title="MainWindow">
 
-    <Grid RowDefinitions="50 *">
-        <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto">
+    <Window.Resources>
+        <cv:ArrowAngleConverter x:Key="ArrowAngleConverter" />
+    </Window.Resources>
+
+    <Grid x:Name="MainGrid" RowDefinitions="50 *">
+        <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto" Cursor="Hand" PointerPressed="UserMenuOpened">
             <svg:Svg Grid.Column="0" Path="avares://VendingDesktop/Assets/YoutubeLogo.svg" Width="60" Margin="10 0 0 0" />
 
             <Border Name="UserMenuButton"
                     Grid.Column="2"
                     Padding="10"
                     BorderBrush="LightGray"
-                    BorderThickness="1 0 0 0"
-                    Cursor="Hand"
-                    PointerPressed="UserMenuButton_OnPointerPressed">
+                    BorderThickness="1 0 0 0">
                 <StackPanel>
                     <Popup Name="MenuPopup"
                            Placement="Bottom"
@@ -38,9 +41,9 @@
                                 <ListBox.ItemTemplate>
                                     <DataTemplate DataType="vm:AccountPageListItemTemplate">
                                         <StackPanel Orientation="Horizontal" Spacing="8">
-                                            <PathIcon Data="{Binding Icon}" Height="20" Width="20" />
+                                            <PathIcon Data="{Binding Icon}" Height="20" Width="20" Foreground="Black" />
                                             <TextBlock Text="{Binding Label}"
-                                                       FontSize="14"
+                                                       FontSize="14" Foreground="Black"
                                                        VerticalAlignment="Center" />
                                         </StackPanel>
                                     </DataTemplate>
@@ -84,19 +87,19 @@
                                 CornerRadius="0"
                                 Background="Transparent"
                                 Command="{Binding TogglePageListCommand}">
-                            <PathIcon Data="{StaticResource List}" Height="30" Width="30" />
+                            <PathIcon Data="{StaticResource List}" Height="34" Width="34" />
                         </Button>
                     </Grid>
 
-                    <ItemsControl ItemsSource="{Binding Pages}" Margin="10 0 0 0">
+                    <ItemsControl ItemsSource="{Binding Pages}" Margin="10 0 0 0" Tag="{Binding IsMenuOpen}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate DataType="vm:PageListItemTemplate">
                                 <StackPanel>
                                     <!-- Страница в списке -->
-                                    <Border Padding="5 8" Cursor="Hand" PointerPressed="PageItem_PointerPressed">
+                                    <Border Padding="6 8" Cursor="Hand" PointerPressed="PageSelected">
                                         <Grid>
                                             <StackPanel Orientation="Horizontal" Spacing="10">
-                                                <PathIcon Data="{Binding Icon}" Height="20" Width="20"
+                                                <PathIcon Data="{Binding Icon}" Height="24" Width="24"
                                                           Foreground="Gray" />
                                                 <TextBlock Text="{Binding Label}"
                                                            FontSize="16" Foreground="Gray"
@@ -106,9 +109,18 @@
                                             <!-- Стрелка вниз при наличии детей -->
                                             <PathIcon Data="{StaticResource ArrowDown}"
                                                       Height="14" Width="14"
-                                                      IsVisible="{Binding HasChildren}"
                                                       HorizontalAlignment="Right"
                                                       Margin="0 0 10 0">
+                                                <PathIcon.RenderTransform>
+                                                    <RotateTransform Angle="{Binding IsExpanded, Converter={StaticResource ArrowAngleConverter}}" />
+                                                </PathIcon.RenderTransform>
+                                                <PathIcon.IsVisible>
+                                                    <MultiBinding Converter="{x:Static BoolConverters.And}">
+                                                        <Binding Path="HasChildren" />
+                                                        <Binding Path="Tag"
+                                                                 RelativeSource="{RelativeSource AncestorType=ItemsControl}" />
+                                                    </MultiBinding>
+                                                </PathIcon.IsVisible>
                                             </PathIcon>
                                         </Grid>
                                     </Border>
@@ -120,7 +132,7 @@
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="vm:PageListItemTemplate">
                                                 <Border Padding="5 5" Cursor="Hand" Background="Transparent"
-                                                        PointerPressed="ChildPageItem_PointerPressed">
+                                                        PointerPressed="PageSelected">
                                                     <StackPanel Orientation="Horizontal" Spacing="10">
                                                         <PathIcon Data="{Binding Icon}" Height="18" Width="18"
                                                                   Foreground="Gray" />
