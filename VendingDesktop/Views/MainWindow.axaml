@@ -5,24 +5,20 @@
         xmlns:cv="clr-namespace:VendingDesktop.Converters"
         xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
         xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Svg.Controls.Avalonia"
-        MinWidth="1000"
-        MinHeight="620"
-        Width="1400"
-        Height="850"
-        d:DesignWidth="800"
-        d:DesignHeight="450"
+        MinWidth="1000" MinHeight="620"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:Class="VendingDesktop.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Title="MainWindow">
+        Title="ООО Торговые автоматы">
 
     <Window.Resources>
         <cv:ArrowAngleConverter x:Key="ArrowAngleConverter" />
     </Window.Resources>
 
     <Grid x:Name="MainGrid" RowDefinitions="50 *">
-        <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto" Cursor="Hand" PointerPressed="UserMenuOpened">
+        <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto" Cursor="Hand"
+              PointerPressed="ToggleAccountPageListCommand">
             <svg:Svg Grid.Column="0" Path="avares://VendingDesktop/Assets/YoutubeLogo.svg" Width="60" Margin="10 0 0 0" />
 
             <Border Name="UserMenuButton"
@@ -31,10 +27,11 @@
                     BorderBrush="LightGray"
                     BorderThickness="1 0 0 0">
                 <StackPanel>
-                    <Popup Name="MenuPopup"
-                           Placement="Bottom"
+                    <Popup Placement="Bottom"
                            PlacementTarget="{Binding #UserMenuButton}"
                            IsLightDismissEnabled="True"
+                           IsOpen="{Binding IsAccountPageListOpen, Mode=TwoWay}"
+                           Closed="OnAccountPopupClosed"
                            Width="{Binding #UserMenuButton.Bounds.Width}">
                         <Border Background="White" BorderBrush="LightGray" BorderThickness="0 1 0 0">
                             <ListBox ItemsSource="{Binding AccountPages}" Background="Transparent">
@@ -58,6 +55,13 @@
                             <TextBlock Text="Автоматoв А.А." FontWeight="Bold" Foreground="Black" />
                             <TextBlock Text="Администратор" FontSize="12" Foreground="Gray" />
                         </StackPanel>
+
+                        <PathIcon Data="{StaticResource ArrowDown}" Height="12" Width="12">
+                            <PathIcon.RenderTransform>
+                                <RotateTransform
+                                    Angle="{Binding IsAccountPageListOpen, Converter={StaticResource ArrowAngleConverter}}" />
+                            </PathIcon.RenderTransform>
+                        </PathIcon>
                     </StackPanel>
                 </StackPanel>
             </Border>
@@ -112,7 +116,8 @@
                                                       HorizontalAlignment="Right"
                                                       Margin="0 0 10 0">
                                                 <PathIcon.RenderTransform>
-                                                    <RotateTransform Angle="{Binding IsExpanded, Converter={StaticResource ArrowAngleConverter}}" />
+                                                    <RotateTransform
+                                                        Angle="{Binding IsExpanded, Converter={StaticResource ArrowAngleConverter}}" />
                                                 </PathIcon.RenderTransform>
                                                 <PathIcon.IsVisible>
                                                     <MultiBinding Converter="{x:Static BoolConverters.And}">

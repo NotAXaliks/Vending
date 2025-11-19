@@ -16,6 +16,14 @@ public class MainWindowViewModel : ViewModelBase
         set => SetProperty(ref _isPageListOpen, value);
     }
 
+    private bool _isAccountPageListOpen = false;
+
+    public bool IsAccountPageListOpen
+    {
+        get =>  _isAccountPageListOpen;
+        set =>  SetProperty(ref _isAccountPageListOpen, value);
+    }
+
     private ViewModelBase _currentPage = new MainPageViewModel();
 
     public ViewModelBase CurrentPage
@@ -48,7 +56,7 @@ public class MainWindowViewModel : ViewModelBase
         set
         {
             if (SetProperty(ref _selectedAccountPageListItem, value))
-                SelectPage();
+                SelectAccountPage();
         }
     }
 
@@ -61,8 +69,8 @@ public class MainWindowViewModel : ViewModelBase
 
     public ObservableCollection<PageListItemTemplate> Pages { get; set; } =
     [
-        new PageListItemTemplate("Главная",  "Search", typeof(MainPageViewModel), null),
-        new PageListItemTemplate("Монитор ТА",  "Monitor", typeof(MonitorPageViewModel), null),
+        new PageListItemTemplate("Главная", "Search", typeof(MainPageViewModel), null),
+        new PageListItemTemplate("Монитор ТА", "Monitor", typeof(MonitorPageViewModel), null),
         new PageListItemTemplate("Детальные отчёты", "Description", typeof(MonitorPageViewModel), [
             new PageListItemTemplate("Торговые автоматы", "Description", typeof(VendingMachinesPageViewModel), null),
         ]),
@@ -77,9 +85,10 @@ public class MainWindowViewModel : ViewModelBase
         ]),
     ];
 
-    private void SelectPage()
+    private void SelectAccountPage()
     {
-        if (SelectedPageListItem?.ModelType != null) CurrentPage = (ViewModelBase)Activator.CreateInstance(SelectedPageListItem.ModelType)!;
+        if (SelectedPageListItem?.ModelType != null)
+            CurrentPage = (ViewModelBase)Activator.CreateInstance(SelectedPageListItem.ModelType)!;
     }
 
     public void TogglePageListCommand() => IsMenuOpen = !IsMenuOpen;

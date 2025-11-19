@@ -1,3 +1,4 @@
+using System;
 using Avalonia.Controls;
 using Avalonia.Input;
 using VendingDesktop.ViewModels;
@@ -12,11 +13,6 @@ public partial class MainWindow : Window
         DataContext = new MainWindowViewModel();
     }
 
-    private void UserMenuOpened(object? sender, PointerPressedEventArgs e)
-    {
-        MenuPopup.IsOpen = !MenuPopup.IsOpen;
-    }
-    
     private void PageSelected(object? sender, PointerPressedEventArgs e)
     {
         if (sender is Border border && border.DataContext is PageListItemTemplate item)
@@ -24,5 +20,17 @@ public partial class MainWindow : Window
             if (item.HasChildren) item.Toggle();
             else (DataContext as MainWindowViewModel)?.SelectPage(item);
         }
+    }
+
+    private void ToggleAccountPageListCommand(object? sender, PointerPressedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.IsAccountPageListOpen = !vm.IsAccountPageListOpen;
+    }
+
+    private void OnAccountPopupClosed(object? sender, EventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.IsAccountPageListOpen = false;
     }
 }
