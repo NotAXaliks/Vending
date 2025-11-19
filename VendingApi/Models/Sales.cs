@@ -22,8 +22,10 @@ public class Sales
     
     public PaymentMethod PaymentMethod  { get; set; }
     
-    public ICollection<Machines> Machines { get; set; }
-    public ICollection<Products> Products { get; set; }
+    [ForeignKey(nameof(MachineId))]
+    public Machines Machine { get; set; }
+    [ForeignKey(nameof(ProductId))]
+    public Products Product { get; set; }
 }
 
 public enum PaymentMethod
