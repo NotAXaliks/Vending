@@ -166,7 +166,7 @@
                             </TextBlock>
 
                             <TextBlock VerticalAlignment="Center" HorizontalAlignment="Right" FontSize="16"
-                                       Text="{Binding SelectedPageListItem.Label}" Foreground="Gray" />
+                                       Text="{Binding SelectedPageListItem.Label}" Foreground="#f6f6f6" />
                         </Grid>
                     </Border>
                     <Border Background="DarkGray">
