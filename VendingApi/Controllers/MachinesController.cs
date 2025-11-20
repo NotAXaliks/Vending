@@ -9,38 +9,43 @@ namespace VendingApi.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-[Authorize]
+// [Authorize]
 public class MachinesController(AppDbContext databaseContext, IConfiguration configuration) : BaseController(
     databaseContext,
     configuration)
 {
-    [HttpGet]
+    [HttpPost]
     public async Task<IActionResult> ListMachines([FromBody] GetMachinesRequestDto dto)
     {
-        var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
-        if (idClaim == null) return Unauthorized("Invalid token");
-
-        var user = await databaseContext.Users.FindAsync(idClaim);
-        if (user == null) return Unauthorized("Invalid token");
+        // var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        // if (idClaim == null) return Unauthorized("Invalid token");
+        //
+        // var user = await DatabaseContext.Users.FindAsync(idClaim);
+        // if (user == null) return Unauthorized("Invalid token");
 
         var takeMachines = dto.Show ?? 10;
         var page = dto.Page ?? 1;
 
-        var machinesQuery = databaseContext.Machines.Take(takeMachines);
+        var machinesQuery = DatabaseContext.Machines.AsQueryable();
 
-        if (page > 0) machinesQuery = machinesQuery.Skip(takeMachines * (page - 1));
         if (!string.IsNullOrWhiteSpace(dto.Filter))
         {
-            machinesQuery = machinesQuery.Where(m => EF.Functions.ILike(m.Model, $"%{dto.Filter}%"));
+            machinesQuery = machinesQuery.Where(m => m.Name.ToUpper().Contains(dto.Filter.ToUpper()));
         }
 
-        var machines = await machinesQuery.ToListAsync();
+        var foundMachinesCount = await machinesQuery.CountAsync();
+        if (page > 0) machinesQuery = machinesQuery.Skip(takeMachines * (page - 1));
 
-        return Ok(machines.Select(m => new MachineDto(m.Id, m.Location, m.Model, m.PaymentType, m.Price, m.SerialNumber,
-            m.InventoryNumber, m.Manufacter, m.EntryDate.ToUnixTimeMilliseconds(),
-            m.ManufactureDate.ToUnixTimeMilliseconds(), m.StartDate.ToUnixTimeMilliseconds(),
-            m.LastInspectionDate.ToUnixTimeMilliseconds(), m.NextMaintenanceDate.ToUnixTimeMilliseconds(),
-            m.InspectionIntervalMonths, m.ResourceHours, m.MaintenanceHours, m.Status, m.OriginCounty,
-            m.LastInspectedById)));
+        var totalMachinesCount = await DatabaseContext.Machines.CountAsync();
+        var machines = await machinesQuery.Take(takeMachines).ToListAsync();
+
+        var formattedMachines = machines.Select(m => new MachineDto(m.Id, m.Name, m.Location, m.Model, m.PaymentType,
+            m.TotalEarn, m.SerialNumber, m.InventoryNumber, m.Manufacturer, m.Modem,
+            m.EntryDate.ToUnixTimeMilliseconds(), m.ManufactureDate.ToUnixTimeMilliseconds(),
+            m.StartDate.ToUnixTimeMilliseconds(), m.LastInspectionDate?.ToUnixTimeMilliseconds(),
+            m.NextMaintenanceDate?.ToUnixTimeMilliseconds(), m.InspectionIntervalMonths, m.ResourceHours,
+            m.MaintenanceHours, m.Status, m.OriginCounty, m.LastInspectedById)).ToArray();
+
+        return SendData(new GetMachinesResponse(formattedMachines, foundMachinesCount, totalMachinesCount));
     }
 }

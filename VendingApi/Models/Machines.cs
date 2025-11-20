@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace VendingApi.Models;
 
+[Index(nameof(Name))]
 [Index(nameof(SerialNumber), IsUnique = true)]
 [Index(nameof(InventoryNumber), IsUnique = true)]
 public class Machines
@@ -11,6 +12,8 @@ public class Machines
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Auto increment
     public int Id { get; set; }
+    
+    public required string Name { get; set; }
     
     [MinLength(5)]
     [MaxLength(100)]
@@ -23,7 +26,8 @@ public class Machines
     public MachinePaymentType PaymentType { get; set; }
     
     [Range(0, int.MaxValue)]
-    public decimal Price { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public decimal TotalEarn { get; set; }
 
     [MinLength(1)]
     [MaxLength(40)]
@@ -35,14 +39,16 @@ public class Machines
     
     [MinLength(1)]
     [MaxLength(100)]
-    public required string Manufacter { get; set; }
+    public required string Manufacturer { get; set; }
+    
+    public required string Modem { get; set; }
     
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public DateTimeOffset EntryDate { get; set; }
     public DateTimeOffset ManufactureDate { get; set; }
     public DateTimeOffset StartDate { get; set; }
-    public DateTimeOffset LastInspectionDate { get; set; }
-    public DateTimeOffset NextMaintenanceDate { get; set; }
+    public DateTimeOffset? LastInspectionDate { get; set; }
+    public DateTimeOffset? NextMaintenanceDate { get; set; }
     
     [Range(0, int.MaxValue)]
     public int InspectionIntervalMonths { get; set; }

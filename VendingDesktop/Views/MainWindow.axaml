@@ -5,7 +5,7 @@
         xmlns:cv="clr-namespace:VendingDesktop.Converters"
         xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
         xmlns:svg="clr-namespace:Avalonia.Svg;assembly=Svg.Controls.Avalonia"
-        MinWidth="1000" MinHeight="620"
+        MinWidth="1000" MinHeight="700"
         WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         x:Class="VendingDesktop.Views.MainWindow"
@@ -157,8 +157,8 @@
             </SplitView.Pane>
 
             <SplitView.Content>
-                <StackPanel>
-                    <Border Background="#171717" Height="50">
+                <Grid RowDefinitions="Auto *">
+                    <Border Grid.Row="0" Background="#171717" Height="50">
                         <Grid Margin="10 0 10 0">
                             <TextBlock VerticalAlignment="Center" FontSize="24" Foreground="White"
                                        HorizontalAlignment="Left">
@@ -169,10 +169,12 @@
                                        Text="{Binding SelectedPageListItem.Label}" Foreground="#f6f6f6" />
                         </Grid>
                     </Border>
-                    <Border Background="DarkGray">
+                    <ScrollViewer Grid.Row="1" Background="#d9d9d9"
+                                  HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
                         <TransitioningContentControl Content="{Binding CurrentPage}" />
-                    </Border>
-                </StackPanel>
+                    </ScrollViewer>
+                </Grid>
             </SplitView.Content>
         </SplitView>
     </Grid>

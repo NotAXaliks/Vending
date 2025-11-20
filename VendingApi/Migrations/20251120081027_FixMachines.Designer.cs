@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using VendingApi.Context;
@@ -11,9 +12,11 @@ using VendingApi.Context;
 namespace VendingApi.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20251120081027_FixMachines")]
+    partial class FixMachines
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,7 @@ namespace VendingApi.Migrations
                     b.Property<int?>("LastInspectedById")
                         .HasColumnType("integer");
 
-                    b.Property<DateTimeOffset?>("LastInspectionDate")
+                    b.Property<DateTimeOffset>("LastInspectionDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Location")
@@ -78,7 +81,7 @@ namespace VendingApi.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<DateTimeOffset?>("NextMaintenanceDate")
+                    b.Property<DateTimeOffset>("NextMaintenanceDate")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("OriginCounty")
@@ -88,6 +91,9 @@ namespace VendingApi.Migrations
 
                     b.Property<int>("PaymentType")
                         .HasColumnType("integer");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("numeric");
 
                     b.Property<int>("ResourceHours")
                         .HasColumnType("integer");
@@ -103,11 +109,6 @@ namespace VendingApi.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("integer");
 
-                    b.Property<decimal>("TotalEarn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("numeric")
-                        .HasDefaultValue(0m);
-
                     b.HasKey("Id");
 
                     b.HasIndex("InventoryNumber")
@@ -115,16 +116,14 @@ namespace VendingApi.Migrations
 
                     b.HasIndex("LastInspectedById");
 
-                    b.HasIndex("Name");
-
                     b.HasIndex("SerialNumber")
                         .IsUnique();
 
                     b.ToTable("Machines", t =>
                         {
-                            t.HasCheckConstraint("Machines_LastInspectionDate_check", "\"NextMaintenanceDate\" >= \"EntryDate\" and \"NextMaintenanceDate\" <= now()");
+                            t.HasCheckConstraint("Machines_LastInspectionDate_check", "\"NextMaintenanceDate\" > \"EntryDate\" and \"NextMaintenanceDate\" < now()");
 
-                            t.HasCheckConstraint("Machines_StartDate_check", "\"StartDate\" >= \"EntryDate\" and \"StartDate\" > \"ManufactureDate\"");
+                            t.HasCheckConstraint("Machines_StartDate_check", "\"StartDate\" > \"EntryDate\" and \"StartDate\" < \"ManufactureDate\"");
                         });
                 });
 

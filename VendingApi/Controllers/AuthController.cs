@@ -59,7 +59,7 @@ public class AuthController(AppDbContext databaseContext, IConfiguration configu
         await CreateSessionInDatabase(refreshToken, user.Id, HttpContext, dto.DeviceName);
         await DatabaseContext.SaveChangesAsync();
 
-        return Ok(new AuthAuthResponseDto(UserMeDto.FromDatabaseUser(user), token, refreshToken));
+        return SendData(new AuthAuthResponseDto(UserMeDto.FromDatabaseUser(user), token, refreshToken));
     }
 
     [HttpPost("login")]
@@ -81,7 +81,7 @@ public class AuthController(AppDbContext databaseContext, IConfiguration configu
         await CreateSessionInDatabase(refreshToken, user.Id, HttpContext, dto.DeviceName);
         await DatabaseContext.SaveChangesAsync();
 
-        return Ok(new AuthAuthResponseDto(UserMeDto.FromDatabaseUser(user), token, refreshToken));
+        return SendData(new AuthAuthResponseDto(UserMeDto.FromDatabaseUser(user), token, refreshToken));
     }
 
     [HttpPost("refresh-token")]
@@ -106,7 +106,7 @@ public class AuthController(AppDbContext databaseContext, IConfiguration configu
         await CreateSessionInDatabase(refreshToken, oldSession.UserId, HttpContext, oldSession.DeviceName);
         await DatabaseContext.SaveChangesAsync();
 
-        return Ok(new AuthRefreshAccessTokenResponseDto(token, refreshToken));
+        return SendData(new AuthRefreshAccessTokenResponseDto(token, refreshToken));
     }
 
     [HttpGet("checkJWT")]
@@ -118,7 +118,7 @@ public class AuthController(AppDbContext databaseContext, IConfiguration configu
 
         var userId = idClaim.Value;
 
-        return Ok($"User id: {userId}");
+        return SendData($"User id: {userId}");
     }
 
     private async Task<bool> CreateSessionInDatabase(string token, int userId, HttpContext httpContext,
