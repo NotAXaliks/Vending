@@ -1,0 +1,269 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="VendingDesktop.Views.Modals.AddMachineModal">
+    <Grid Background="#80000000" x:Name="OverlayGrid">
+        <Grid RowDefinitions="Auto * Auto" Background="{DynamicResource PrimaryBackgroundColor}"
+              HorizontalAlignment="Center" VerticalAlignment="Center" Width="850">
+            <Grid.Styles>
+                <Style Selector="TextBlock">
+                    <Setter Property="FontSize" Value="14" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                </Style>
+
+                <Style Selector="TextBox">
+                    <Setter Property="CornerRadius" Value="5" />
+                    <Setter Property="BorderBrush" Value="#d3d3d3" />
+                    <Setter Property="TextWrapping" Value="Wrap" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0 5 0 15" />
+                </Style>
+                <Style Selector="TextBox[IsEnabled=False]">
+                    <Setter Property="Text" Value="-" />
+                </Style>
+
+                <Style Selector="ComboBox">
+                    <Setter Property="CornerRadius" Value="5" />
+                    <Setter Property="BorderBrush" Value="#d3d3d3" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0 5 0 15" />
+                </Style>
+
+                <Style Selector="Border">
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="CornerRadius" Value="5" />
+                    <Setter Property="BorderBrush" Value="#d3d3d3" />
+                </Style>
+                
+                <Style Selector="Button">
+                    <Setter Property="CornerRadius" Value="5" />
+                </Style>
+            </Grid.Styles>
+
+            <!-- Заголовок -->
+            <Border Grid.Row="0" Padding="10">
+                <TextBlock Text="Создание торгового аппарата" FontSize="20" VerticalAlignment="Center"
+                           Foreground="{DynamicResource PrimaryColor}" />
+            </Border>
+
+            <!-- Таблица -->
+            <Border Grid.Row="1" Background="White" Padding="15">
+                <Grid ColumnDefinitions="* * *" RowDefinitions="* * * * * * * * * *" ColumnSpacing="15">
+                    <!-- 1 Строка -->
+                    <StackPanel Grid.Row="0" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Название ТА" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="1">
+                        <TextBlock>
+                            <Run Text="Производитель ТА" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <ComboBox>
+                            <ComboBoxItem Content="Necta" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="2">
+                        <TextBlock>
+                            <Run Text="Модель ТА" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <ComboBox>
+                            <ComboBoxItem Content="Necta" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- 2 Строка -->
+                    <StackPanel Grid.Row="1" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Режим работы" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <ComboBox>
+                            <ComboBoxItem Content="Стандартный" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <TextBlock>
+                            <Run Text="Производитель ТА (Slave)" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox IsEnabled="False" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="1" Grid.Column="2">
+                        <TextBlock>
+                            <Run Text="Модель ТА (Slave)" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox IsEnabled="False" />
+                    </StackPanel>
+
+                    <!-- 3 Строка -->
+                    <StackPanel Grid.Row="2" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Адрес" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="1">
+                        <TextBlock>
+                            <Run Text="Место" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="2" Grid.Column="2">
+                        <TextBlock Text="Координаты" />
+                        <TextBox />
+                    </StackPanel>
+
+                    <!-- 4 Строка -->
+                    <StackPanel Grid.Row="3" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Номер автомата" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="1">
+                        <TextBlock Text="Время работы (Формат: 08:00-22:00)" />
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="2">
+                        <TextBlock>
+                            <Run Text="Часовой пояс" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+
+                    <!-- 5 Строка -->
+                    <StackPanel Grid.Row="4" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Товарная матрица" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не установлена" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Grid.Column="1">
+                        <TextBlock Text="Шаблон крит. значений" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не установлена" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Grid.Column="2">
+                        <TextBlock Text="Шаблон уведомлений" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не установлена" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- 6 Строка -->
+                    <StackPanel Grid.Row="5" Grid.Column="0">
+                        <TextBlock Text="Клиент" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не задан" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Grid.Column="1">
+                        <TextBlock Text="Менеджер" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не задан" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="5" Grid.Column="2">
+                        <TextBlock Text="Инженер" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не задан" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- 7 Строка -->
+                    <StackPanel Grid.Row="6" Grid.Column="0">
+                        <TextBlock Text="Техник-оператор" />
+                        <ComboBox SelectedIndex="0">
+                            <ComboBoxItem Content="Не задан" />
+                            <ComboBoxItem Content="Любая" />
+                        </ComboBox>
+                    </StackPanel>
+                    <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
+                        <TextBlock>
+                            <Run Text="Платежные системы" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <Border>
+                            <StackPanel Orientation="Horizontal" Spacing="5" Margin="10 0">
+                                <CheckBox Content="Монетопр." />
+                                <CheckBox Content="Купюропр." />
+                                <CheckBox Content="Модуль б/н опл." />
+                                <CheckBox Content="QR-платежи" />
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- 8 Строка -->
+                    <StackPanel Grid.Row="7" Grid.Column="0">
+                        <TextBlock Text="RFID карты обслуживания" />
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="7" Grid.Column="1">
+                        <TextBlock Text="RFID карты инкассации" />
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="7" Grid.Column="2">
+                        <TextBlock Text="RFID карты загрузки" />
+                        <TextBox />
+                    </StackPanel>
+
+                    <!-- 9 Строка -->
+                    <StackPanel Grid.Row="8" Grid.Column="0">
+                        <TextBlock Text="Id кассы Kit Online (только в случае жесткой привязки)" />
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="8" Grid.Column="1">
+                        <TextBlock>
+                            <Run Text="Приоритет обслуживания" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox />
+                    </StackPanel>
+                    <StackPanel Grid.Row="8" Grid.Column="2">
+                        <TextBlock>
+                            <Run Text="Модем" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox IsEnabled="False" />
+                    </StackPanel>
+
+                    <!-- 10 Строка -->
+                    <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3">
+                        <TextBlock Text="Примечания" />
+                        <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Кнопки -->
+            <Border Grid.Row="2" Padding="8">
+                <StackPanel Orientation="Horizontal" Spacing="10">
+                    <Button Content="Создать" Background="{DynamicResource PrimaryColor}" Foreground="White" Click="OnCreateClick" />
+                    <Button Content="Отменить" Background="White" Click="OnCancelClick" />
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

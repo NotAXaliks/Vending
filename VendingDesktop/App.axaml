@@ -9,6 +9,7 @@
         <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
         <FluentTheme />
         <StyleInclude Source="avares://VendingDesktop/Assets/Icons.axaml"></StyleInclude>
+        <StyleInclude Source="avares://VendingDesktop/Assets/Colors.axaml"></StyleInclude>
     </Application.Styles>
 
     <Application.DataTemplates>

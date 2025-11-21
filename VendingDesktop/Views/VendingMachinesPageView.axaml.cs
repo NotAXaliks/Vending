@@ -1,10 +1,10 @@
-﻿using System;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using VendingDesktop.Dtos;
 using VendingDesktop.services;
 using VendingDesktop.ViewModels;
+using VendingDesktop.Views.Modals;
 
 namespace VendingDesktop.Views;
 
@@ -67,5 +67,11 @@ public partial class VendingMachinesPageView : UserControl
         _debounceTimer = new System.Timers.Timer(300) { AutoReset = false };
         _debounceTimer.Elapsed += (_, _) => { Dispatcher.UIThread.Post(Refresh); };
         _debounceTimer.Start();
+    }
+
+    private void OnCreateMachineClick(object? sender, RoutedEventArgs e)
+    {
+        var addMachine = new AddMachineModal();
+        MainGrid.Children.Add(addMachine);
     }
 }

@@ -12,157 +12,161 @@
         <cv:RowBackgroundConverter x:Key="RowBackgroundConverter" />
     </UserControl.Resources>
 
-    <Grid RowDefinitions="Auto * Auto" HorizontalAlignment="Center" Width="950" Background="White">
-        <!-- Верхняя панель -->
-        <Border Grid.Row="0" Background="#f6f6f6" Padding="15">
-            <StackPanel>
-                <TextBlock Text="Торговые автоматы" FontSize="24" FontWeight="SemiBold" Foreground="DeepSkyBlue" />
-                <TextBlock Text="{Binding TotalFoundText}" Foreground="#666" FontSize="14" Margin="0 0 0 20" />
-            </StackPanel>
-        </Border>
+    <Grid x:Name="MainGrid">
+        <!-- Основной контент -->
+        <Grid RowDefinitions="Auto * Auto" HorizontalAlignment="Center" Width="950" Background="White">
+            <!-- Верхняя панель -->
+            <Border Grid.Row="0" Background="{DynamicResource PrimaryBackgroundColor}" Padding="15">
+                <StackPanel>
+                    <TextBlock Text="Торговые автоматы" FontSize="24" FontWeight="SemiBold" Foreground="{DynamicResource PrimaryColor}" />
+                    <TextBlock Text="{Binding TotalFoundText}" Foreground="#666" FontSize="14" Margin="0 0 0 20" />
+                </StackPanel>
+            </Border>
 
-        <!-- Таблица -->
-        <Border Grid.Row="1" Padding="10">
-            <StackPanel>
-                <!-- Панель инструментов -->
-                <Grid ColumnDefinitions="Auto * Auto" Margin="0 0 0 20">
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
-                        <TextBlock Text="Показать" VerticalAlignment="Center" />
-                        <ComboBox Width="75" SelectionChanged="OnSetPageSize"
-                                  ItemsSource="{Binding PageSizeOptions}"
-                                  SelectedValue="{Binding PageSize}"
-                                  VerticalAlignment="Center" />
-                        <TextBlock Text="записей" VerticalAlignment="Center" />
-                    </StackPanel>
+            <!-- Таблица -->
+            <Border Grid.Row="1" Padding="10">
+                <StackPanel>
+                    <!-- Панель инструментов -->
+                    <Grid ColumnDefinitions="Auto * Auto" Margin="0 0 0 20">
+                        <StackPanel Grid.Column="0" Orientation="Horizontal" Spacing="5" HorizontalAlignment="Left">
+                            <TextBlock Text="Показать" VerticalAlignment="Center" />
+                            <ComboBox Width="75" SelectionChanged="OnSetPageSize"
+                                      ItemsSource="{Binding PageSizeOptions}"
+                                      SelectedValue="{Binding PageSize}"
+                                      VerticalAlignment="Center" />
+                            <TextBlock Text="записей" VerticalAlignment="Center" />
+                        </StackPanel>
 
-                    <TextBox Grid.Column="1" Width="250" Watermark="Фильтр" HorizontalAlignment="Center"
-                             Text="{Binding Filter}"
-                             TextChanged="OnFilterChanged" />
+                        <TextBox Grid.Column="1" Width="250" Watermark="Фильтр" HorizontalAlignment="Center"
+                                 Text="{Binding Filter}"
+                                 TextChanged="OnFilterChanged" />
 
-                    <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="Добавить" Margin="0 0 10 0" />
-                        <Button Content="Экспорт" />
-                    </StackPanel>
-                </Grid>
+                        <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="Добавить" Margin="0 0 10 0" Click="OnCreateMachineClick" />
+                            <Button Content="Экспорт" />
+                        </StackPanel>
+                    </Grid>
 
-                <!-- Таблица -->
-                <DataGrid x:Name="MachinesTable" ItemsSource="{Binding Machines}"
-                          GridLinesVisibility="Horizontal" CanUserResizeColumns="True" HeadersVisibility="Column">
-                    <DataGrid.Styles>
-                        <Style Selector="DataGridColumnHeader TextBlock">
-                            <Setter Property="Foreground" Value="#37373a" />
-                            <Setter Property="TextWrapping" Value="Wrap" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="FontSize" Value="14" />
-                            <Setter Property="HorizontalAlignment" Value="Center" />
-                            <Setter Property="TextAlignment" Value="Center" />
-                        </Style>
+                    <!-- Таблица -->
+                    <DataGrid x:Name="MachinesTable" ItemsSource="{Binding Machines}"
+                              GridLinesVisibility="Horizontal" CanUserResizeColumns="True" HeadersVisibility="Column">
+                        <DataGrid.Styles>
+                            <Style Selector="DataGridColumnHeader TextBlock">
+                                <Setter Property="Foreground" Value="#37373a" />
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                                <Setter Property="FontWeight" Value="Bold" />
+                                <Setter Property="FontSize" Value="14" />
+                                <Setter Property="HorizontalAlignment" Value="Center" />
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
 
-                        <Style Selector="DataGridCell TextBlock">
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="TextWrapping" Value="Wrap" />
-                            <Setter Property="TextAlignment" Value="Center" />
-                        </Style>
-                    </DataGrid.Styles>
+                            <Style Selector="DataGridCell TextBlock">
+                                <Setter Property="VerticalAlignment" Value="Center" />
+                                <Setter Property="TextWrapping" Value="Wrap" />
+                                <Setter Property="TextAlignment" Value="Center" />
+                            </Style>
+                        </DataGrid.Styles>
 
-                    <DataGrid.Columns>
-                        <DataGridTemplateColumn Header="ID" Width="80">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Id}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Название" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Name}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Модель" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Model}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Компания" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Manufacturer}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Модем" Width="100">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Modem}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Адрес / Место" Width="140">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding Location}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="В работе с" Width="110">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <TextBlock Text="{Binding StartDate}" />
-                                    </Border>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                        <DataGridTemplateColumn Header="Действия" Width="120">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="10"
-                                                Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
-                                        <Button Content="✎" Width="28" Height="28" />
-                                        <Button Content="📄" Width="28" Height="28" />
-                                        <Button Content="🗑" Width="28" Height="28" />
-                                    </StackPanel>
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-            </StackPanel>
-        </Border>
+                        <DataGrid.Columns>
+                            <DataGridTemplateColumn Header="ID" Width="80">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Id}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Название" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Name}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Модель" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Model}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Компания" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Manufacturer}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Модем" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Modem}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Адрес / Место" Width="140">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding Location}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="В работе с" Width="110">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <TextBlock Text="{Binding StartDate}" />
+                                        </Border>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Действия" Width="120">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="10"
+                                                    Background="{Binding Index, Converter={StaticResource RowBackgroundConverter}}">
+                                            <Button Content="✎" Width="28" Height="28" />
+                                            <Button Content="🗑" Width="28" Height="28" />
+                                            <Button Content="🔒" Width="28" Height="28" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </StackPanel>
+            </Border>
 
-        <!-- Пагинация -->
-        <Grid Grid.Row="2" ColumnDefinitions="* *" Margin="10 0">
-            <TextBlock Grid.Column="0" Text="{Binding PaginationText}" HorizontalAlignment="Left"
-                       VerticalAlignment="Center" />
+            <!-- Пагинация -->
+            <Grid Grid.Row="2" ColumnDefinitions="* *" Margin="10 0">
+                <TextBlock Grid.Column="0" Text="{Binding PaginationText}" HorizontalAlignment="Left"
+                           VerticalAlignment="Center" />
 
-            <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
-                <Button Content="◀" Width="32" Click="OnPreviousPageClick" />
-                <Button Content="{Binding  Page}" Width="32" />
-                <Button Content="▶" Width="32" Click="OnNextPageClick" />
-            </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10" HorizontalAlignment="Right">
+                    <Button Content="◀" Width="32" Click="OnPreviousPageClick" HorizontalContentAlignment="Center" />
+                    <Button Content="{Binding  Page}" HorizontalContentAlignment="Center" Width="32" />
+                    <Button Content="▶" Width="32" Click="OnNextPageClick" HorizontalContentAlignment="Center" />
+                </StackPanel>
+            </Grid>
         </Grid>
+
     </Grid>
 </UserControl>
