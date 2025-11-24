@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,10 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
         //
         // var user = await DatabaseContext.Users.FindAsync(idClaim);
         // if (user == null) return Unauthorized("Invalid token");
+
+        /* Валидация */
+        if (!ModelState.IsValid) return SendError("Invalid data");
+        /* Конец валидации */
 
         var takeMachines = dto.Show ?? 10;
         var page = dto.Page ?? 1;
@@ -47,5 +52,24 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             m.MaintenanceHours, m.Status, m.OriginCounty, m.LastInspectedById)).ToArray();
 
         return SendData(new GetMachinesResponse(formattedMachines, foundMachinesCount, totalMachinesCount));
+    }
+
+    [HttpPut]
+    public async Task<IActionResult> CreateMachine([FromBody] CreateMachineRequestDto dto)
+    {
+        // var idClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+        // if (idClaim == null) return Unauthorized("Invalid token");
+        //
+        // var user = await DatabaseContext.Users.FindAsync(idClaim);
+        // if (user == null) return Unauthorized("Invalid token");
+
+        /* Валидация */
+        if (!ModelState.IsValid) return SendError("Invalid data");
+        if (!string.IsNullOrWhiteSpace(dto.WorkTime) &&
+            Regex.IsMatch(dto.WorkTime, @"(?:[01]\d|2[0-3]):[0-5]\d-[0-5]\d:[0-5]\d"))
+            return SendError("Invalid WorkTime");
+        /* Конец валидации */
+
+        return Ok();
     }
 }

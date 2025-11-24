@@ -3,7 +3,7 @@
              xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
              x:Class="VendingDesktop.Views.Modals.AddMachineModal"
              x:DataType="vm:AddMachineModalViewModel">
-    <Grid Background="#80000000" x:Name="OverlayGrid">
+    <Grid Background="#80000000">
         <Grid RowDefinitions="Auto * Auto" Background="{DynamicResource PrimaryBackgroundColor}"
               HorizontalAlignment="Center" VerticalAlignment="Center" Width="850">
             <Grid.Styles>
@@ -56,7 +56,7 @@
                             <Run Text="Название ТА" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox Text="{Binding Name}" />
+                        <TextBox Text="{Binding Name}" MaxLength="50" />
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1">
                         <TextBlock>
@@ -119,7 +119,7 @@
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="Координаты" />
-                        <TextBox />
+                        <TextBox Text="{Binding Coordinates}" />
                     </StackPanel>
 
                     <!-- 4 Строка -->
@@ -273,7 +273,8 @@
                     <Button Content="Создать" Background="{DynamicResource PrimaryColor}" Foreground="White"
                             Click="OnCreateClick" />
                     <Button Content="Отменить" Background="White" Click="OnCancelClick" />
-                    <ScrollViewer Height="60" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Height="60" Width="700" HorizontalScrollBarVisibility="Auto"
+                                  VerticalScrollBarVisibility="Auto">
                         <TextBlock x:Name="ErrorsBlock" Foreground="Red" Margin="10 0 0 0" />
                     </ScrollViewer>
                 </StackPanel>

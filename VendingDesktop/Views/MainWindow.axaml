@@ -172,7 +172,9 @@
                     <ScrollViewer Grid.Row="1" Background="#d9d9d9"
                                   HorizontalScrollBarVisibility="Auto"
                                   VerticalScrollBarVisibility="Auto">
-                        <TransitioningContentControl Content="{Binding CurrentPage}" />
+                        <Grid Background="#80000000">
+                            <TransitioningContentControl Content="{Binding CurrentPage}" />
+                        </Grid>
                     </ScrollViewer>
                 </Grid>
             </SplitView.Content>

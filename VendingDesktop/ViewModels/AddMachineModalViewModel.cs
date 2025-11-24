@@ -12,6 +12,7 @@ public class AddMachineModalViewModel : ViewModelBase
     private string _workMode = string.Empty;
     private string _address = string.Empty;
     private string _location = string.Empty;
+    private string _coordinates = string.Empty;
     private string _machineNumber = string.Empty;
     private string _workTime = string.Empty;
     private string _timezone = "UTC +3:00";
@@ -39,7 +40,7 @@ public class AddMachineModalViewModel : ViewModelBase
 
     public ObservableCollection<PaymentOptionTemplate> PaymentOptions { get; set; } =
         [new("Монетопр."), new("Купюропр."), new("Модель б/н опл."), new("QR-платежи")];
-    
+
     public string Name
     {
         get => _name;
@@ -74,6 +75,12 @@ public class AddMachineModalViewModel : ViewModelBase
     {
         get => _location;
         set => SetProperty(ref _location, value);
+    }
+
+    public string Coordinates
+    {
+        get => _coordinates;
+        set => SetProperty(ref _coordinates, value);
     }
 
     public string MachineNumber
@@ -136,10 +143,51 @@ public class AddMachineModalViewModel : ViewModelBase
         set => SetProperty(ref _notes, value);
     }
 
+    public MachinePriority PriorityToEnum(string priorityString)
+    {
+        if (priorityString == PriorityOptions[0]) return MachinePriority.High;
+        if (priorityString == PriorityOptions[1]) return MachinePriority.Medium;
+        if (priorityString == PriorityOptions[2]) return MachinePriority.Low;
+        
+        return MachinePriority.Medium;
+    }
+
+    public MachineTimezone TimezoneToEnum(string timezoneString)
+    {
+        if (timezoneString == TimezoneOptions[0]) return MachineTimezone.UTC_12;
+        if (timezoneString == TimezoneOptions[1]) return MachineTimezone.UTC_11;
+        if (timezoneString == TimezoneOptions[2]) return MachineTimezone.UTC_10;
+        if (timezoneString == TimezoneOptions[3]) return MachineTimezone.UTC_9;
+        if (timezoneString == TimezoneOptions[4]) return MachineTimezone.UTC_8;
+        if (timezoneString == TimezoneOptions[5]) return MachineTimezone.UTC_7;
+        if (timezoneString == TimezoneOptions[6]) return MachineTimezone.UTC_6;
+        if (timezoneString == TimezoneOptions[7]) return MachineTimezone.UTC_5;
+        if (timezoneString == TimezoneOptions[8]) return MachineTimezone.UTC_4;
+        if (timezoneString == TimezoneOptions[9]) return MachineTimezone.UTC_3;
+        if (timezoneString == TimezoneOptions[10]) return MachineTimezone.UTC_2;
+        if (timezoneString == TimezoneOptions[11]) return MachineTimezone.UTC_1;
+        if (timezoneString == TimezoneOptions[12]) return MachineTimezone.UTC_0;
+        if (timezoneString == TimezoneOptions[13]) return MachineTimezone.UTC1;
+        if (timezoneString == TimezoneOptions[14]) return MachineTimezone.UTC2;
+        if (timezoneString == TimezoneOptions[15]) return MachineTimezone.UTC3;
+        if (timezoneString == TimezoneOptions[16]) return MachineTimezone.UTC4;
+        if (timezoneString == TimezoneOptions[17]) return MachineTimezone.UTC5;
+        if (timezoneString == TimezoneOptions[18]) return MachineTimezone.UTC6;
+        if (timezoneString == TimezoneOptions[19]) return MachineTimezone.UTC7;
+        if (timezoneString == TimezoneOptions[20]) return MachineTimezone.UTC8;
+        if (timezoneString == TimezoneOptions[21]) return MachineTimezone.UTC9;
+        if (timezoneString == TimezoneOptions[22]) return MachineTimezone.UTC10;
+        if (timezoneString == TimezoneOptions[23]) return MachineTimezone.UTC11;
+        if (timezoneString == TimezoneOptions[24]) return MachineTimezone.UTC12;
+        
+        // Отправляем по умолчанию UTC+3
+        return MachineTimezone.UTC3;
+    }
+
     public List<string> GetErrors()
     {
         var errors = new List<string>();
-        
+
         if (string.IsNullOrWhiteSpace(Name)) errors.Add("Поле \"Название ТА\" должно быть указано");
         if (string.IsNullOrWhiteSpace(Manufacturer)) errors.Add("Поле \"Производитель ТА\" должно быть указано");
         if (string.IsNullOrWhiteSpace(Model)) errors.Add("Поле \"Модель ТА\" должно быть указано");
@@ -149,11 +197,48 @@ public class AddMachineModalViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(MachineNumber)) errors.Add("Поле \"Номер автомата\" должно быть указано");
         if (string.IsNullOrWhiteSpace(Timezone)) errors.Add("Поле \"Часовой пояс\" должно быть указано");
         if (string.IsNullOrWhiteSpace(ProductMatrix)) errors.Add("Поле \"Товарная матрица\" должно быть указано");
-        if (!PaymentOptions.Any(p => p.IsChecked)) errors.Add("Хотя бы один элемент из поля \"Платежные системы\" должен быть выбран!");
+        if (!PaymentOptions.Any(p => p.IsChecked))
+            errors.Add("Хотя бы один элемент из поля \"Платежные системы\" должен быть выбран!");
         if (string.IsNullOrWhiteSpace(Priority)) errors.Add("Поле \"Приоритет обслуживания\" должно быть указано");
 
         return errors;
     }
+}
+
+public enum MachinePriority
+{
+    High,
+    Medium,
+    Low
+}
+
+public enum MachineTimezone
+{
+    UTC_12,
+    UTC_11,
+    UTC_10,
+    UTC_9,
+    UTC_8,
+    UTC_7,
+    UTC_6,
+    UTC_5,
+    UTC_4,
+    UTC_3,
+    UTC_2,
+    UTC_1,
+    UTC_0,
+    UTC1,
+    UTC2,
+    UTC3,
+    UTC4,
+    UTC5,
+    UTC6,
+    UTC7,
+    UTC8,
+    UTC9,
+    UTC10,
+    UTC11,
+    UTC12,
 }
 
 public record PaymentOptionTemplate(string Name, bool IsChecked = false);
