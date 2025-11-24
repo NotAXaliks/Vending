@@ -71,7 +71,10 @@ public partial class VendingMachinesPageView : UserControl
 
     private void OnCreateMachineClick(object? sender, RoutedEventArgs e)
     {
-        var addMachine = new AddMachineModal();
+        var addMachine = new AddMachineModal()
+        {
+            OnClose = () => Refresh(),
+        };
         MainGrid.Children.Add(addMachine);
     }
 }

@@ -1,6 +1,8 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             x:Class="VendingDesktop.Views.Modals.AddMachineModal">
+             xmlns:vm="clr-namespace:VendingDesktop.ViewModels"
+             x:Class="VendingDesktop.Views.Modals.AddMachineModal"
+             x:DataType="vm:AddMachineModalViewModel">
     <Grid Background="#80000000" x:Name="OverlayGrid">
         <Grid RowDefinitions="Auto * Auto" Background="{DynamicResource PrimaryBackgroundColor}"
               HorizontalAlignment="Center" VerticalAlignment="Center" Width="850">
@@ -28,12 +30,12 @@
                     <Setter Property="Margin" Value="0 5 0 15" />
                 </Style>
 
-                <Style Selector="Border">
+                <Style Selector="Button">
                     <Setter Property="BorderThickness" Value="1" />
                     <Setter Property="CornerRadius" Value="5" />
                     <Setter Property="BorderBrush" Value="#d3d3d3" />
                 </Style>
-                
+
                 <Style Selector="Button">
                     <Setter Property="CornerRadius" Value="5" />
                 </Style>
@@ -54,27 +56,25 @@
                             <Run Text="Название ТА" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <TextBox Text="{Binding Name}" />
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="1">
                         <TextBlock>
                             <Run Text="Производитель ТА" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <ComboBox>
-                            <ComboBoxItem Content="Necta" />
-                            <ComboBoxItem Content="Любая" />
-                        </ComboBox>
+                        <ComboBox
+                            ItemsSource="{Binding ManufacturerOptions}"
+                            SelectedItem="{Binding Manufacturer}" />
                     </StackPanel>
                     <StackPanel Grid.Row="0" Grid.Column="2">
                         <TextBlock>
                             <Run Text="Модель ТА" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <ComboBox>
-                            <ComboBoxItem Content="Necta" />
-                            <ComboBoxItem Content="Любая" />
-                        </ComboBox>
+                        <ComboBox
+                            ItemsSource="{Binding ModelOptions}"
+                            SelectedItem="{Binding Model}" />
                     </StackPanel>
 
                     <!-- 2 Строка -->
@@ -83,10 +83,9 @@
                             <Run Text="Режим работы" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <ComboBox>
-                            <ComboBoxItem Content="Стандартный" />
-                            <ComboBoxItem Content="Любая" />
-                        </ComboBox>
+                        <ComboBox
+                            ItemsSource="{Binding WorkModeOptions}"
+                            SelectedItem="{Binding WorkMode}" />
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1">
                         <TextBlock>
@@ -109,14 +108,14 @@
                             <Run Text="Адрес" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <TextBox Text="{Binding Address}" />
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="1">
                         <TextBlock>
                             <Run Text="Место" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <TextBox Text="{Binding Location}" />
                     </StackPanel>
                     <StackPanel Grid.Row="2" Grid.Column="2">
                         <TextBlock Text="Координаты" />
@@ -129,18 +128,20 @@
                             <Run Text="Номер автомата" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <TextBox Text="{Binding MachineNumber}" />
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="1">
                         <TextBlock Text="Время работы (Формат: 08:00-22:00)" />
-                        <TextBox />
+                        <MaskedTextBox Mask="99:99-99:99" Text="{Binding WorkTime}" />
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="2">
                         <TextBlock>
                             <Run Text="Часовой пояс" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <ComboBox
+                            ItemsSource="{Binding TimezoneOptions}"
+                            SelectedItem="{Binding Timezone}" />
                     </StackPanel>
 
                     <!-- 5 Строка -->
@@ -149,10 +150,9 @@
                             <Run Text="Товарная матрица" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <ComboBox SelectedIndex="0">
-                            <ComboBoxItem Content="Не установлена" />
-                            <ComboBoxItem Content="Любая" />
-                        </ComboBox>
+                        <ComboBox
+                            ItemsSource="{Binding ProductMatrixOptions}"
+                            SelectedItem="{Binding ProductMatrix}" />
                     </StackPanel>
                     <StackPanel Grid.Row="4" Grid.Column="1">
                         <TextBlock Text="Шаблон крит. значений" />
@@ -206,40 +206,49 @@
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
                         <Border>
-                            <StackPanel Orientation="Horizontal" Spacing="5" Margin="10 0">
-                                <CheckBox Content="Монетопр." />
-                                <CheckBox Content="Купюропр." />
-                                <CheckBox Content="Модуль б/н опл." />
-                                <CheckBox Content="QR-платежи" />
-                            </StackPanel>
+                            <ItemsControl ItemsSource="{Binding PaymentOptions}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="5" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding Name}" IsChecked="{Binding IsChecked}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
                         </Border>
                     </StackPanel>
 
                     <!-- 8 Строка -->
                     <StackPanel Grid.Row="7" Grid.Column="0">
                         <TextBlock Text="RFID карты обслуживания" />
-                        <TextBox />
+                        <TextBox Text="{Binding RFIDInspectionCard}" />
                     </StackPanel>
                     <StackPanel Grid.Row="7" Grid.Column="1">
                         <TextBlock Text="RFID карты инкассации" />
-                        <TextBox />
+                        <TextBox Text="{Binding RFIDCollectionCard}" />
                     </StackPanel>
                     <StackPanel Grid.Row="7" Grid.Column="2">
                         <TextBlock Text="RFID карты загрузки" />
-                        <TextBox />
+                        <TextBox Text="{Binding RFIDLoadingCard}" />
                     </StackPanel>
 
                     <!-- 9 Строка -->
                     <StackPanel Grid.Row="8" Grid.Column="0">
                         <TextBlock Text="Id кассы Kit Online (только в случае жесткой привязки)" />
-                        <TextBox />
+                        <TextBox Text="{Binding KitOnlineId}" />
                     </StackPanel>
                     <StackPanel Grid.Row="8" Grid.Column="1">
                         <TextBlock>
                             <Run Text="Приоритет обслуживания" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox />
+                        <ComboBox
+                            ItemsSource="{Binding PriorityOptions}"
+                            SelectedItem="{Binding Priority}" />
                     </StackPanel>
                     <StackPanel Grid.Row="8" Grid.Column="2">
                         <TextBlock>
@@ -252,7 +261,8 @@
                     <!-- 10 Строка -->
                     <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3">
                         <TextBlock Text="Примечания" />
-                        <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True" />
+                        <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True"
+                                 Text="{Binding Notes}" />
                     </StackPanel>
                 </Grid>
             </Border>
@@ -260,8 +270,12 @@
             <!-- Кнопки -->
             <Border Grid.Row="2" Padding="8">
                 <StackPanel Orientation="Horizontal" Spacing="10">
-                    <Button Content="Создать" Background="{DynamicResource PrimaryColor}" Foreground="White" Click="OnCreateClick" />
+                    <Button Content="Создать" Background="{DynamicResource PrimaryColor}" Foreground="White"
+                            Click="OnCreateClick" />
                     <Button Content="Отменить" Background="White" Click="OnCancelClick" />
+                    <ScrollViewer Height="60" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                        <TextBlock x:Name="ErrorsBlock" Foreground="Red" Margin="10 0 0 0" />
+                    </ScrollViewer>
                 </StackPanel>
             </Border>
         </Grid>
