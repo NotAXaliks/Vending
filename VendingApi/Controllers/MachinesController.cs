@@ -31,7 +31,7 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
         var takeMachines = dto.Show ?? 10;
         var page = dto.Page ?? 1;
 
-        var machinesQuery = DatabaseContext.Machines.AsQueryable();
+        var machinesQuery = DatabaseContext.Machines.Include(m => m.Model).AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(dto.Filter))
         {
@@ -44,14 +44,38 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
         var totalMachinesCount = await DatabaseContext.Machines.CountAsync();
         var machines = await machinesQuery.Take(takeMachines).ToListAsync();
 
-        var formattedMachines = machines.Select(m => new MachineDto(m.Id, m.Name, m.Location, m.Model, m.PaymentType,
-            m.TotalEarn, m.SerialNumber, m.InventoryNumber, m.Manufacturer, m.Modem,
-            m.EntryDate.ToUnixTimeMilliseconds(), m.ManufactureDate.ToUnixTimeMilliseconds(),
-            m.StartDate.ToUnixTimeMilliseconds(), m.LastInspectionDate?.ToUnixTimeMilliseconds(),
-            m.NextMaintenanceDate?.ToUnixTimeMilliseconds(), m.InspectionIntervalMonths, m.ResourceHours,
-            m.MaintenanceHours, m.Status, m.OriginCounty, m.LastInspectedById)).ToArray();
+        var result = machines.Select(m => new MachineWithModelDto(
+            Id: m.Id,
+            Name: m.Name,
+            Location: m.Location,
+            PaymentType: m.PaymentType,
+            TotalEarn: m.TotalEarn,
+            SerialNumber: m.SerialNumber,
+            InventoryNumber: m.InventoryNumber,
+            Modem: m.Modem,
+            WorkTime: m.WorkTime,
+            Timezone: m.Timezone,
+            Priority: m.Priority,
+            WorkMode: m.WorkMode,
+            Notes: m.Notes,
+            EntryDate: m.EntryDate.ToUnixTimeSeconds(),
+            ManufactureDate: m.ManufactureDate.ToUnixTimeSeconds(),
+            StartDate: m.StartDate.ToUnixTimeSeconds(),
+            LastMaintenanceDate: m.LastMaintenanceDate?.ToUnixTimeSeconds(),
+            NextMaintenanceDate: m.NextMaintenanceDate?.ToUnixTimeSeconds(),
+            InspectionIntervalMonths: m.InspectionIntervalMonths,
+            ResourceHours: m.ResourceHours,
+            Status: m.Status,
+            
+            ModelDto: new MachineModelDto(
+                Id: m.Model.Id,
+                Name: m.Model.Name,
+                Manufacturer: m.Model.Manufacturer,
+                OriginCounty: m.Model.Country
+            )
+        )).ToArray();
 
-        return SendData(new GetMachinesResponse(formattedMachines, foundMachinesCount, totalMachinesCount));
+        return SendData(new GetMachinesResponse(result, foundMachinesCount, totalMachinesCount));
     }
 
     [HttpPut]
@@ -69,6 +93,8 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Regex.IsMatch(dto.WorkTime, @"(?:[01]\d|2[0-3]):[0-5]\d-[0-5]\d:[0-5]\d"))
             return SendError("Invalid WorkTime");
         /* Конец валидации */
+        
+        
 
         return Ok();
     }

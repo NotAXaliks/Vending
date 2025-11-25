@@ -3,32 +3,63 @@ using VendingApi.Models;
 
 namespace VendingApi.Dtos;
 
+public record MachineModelDto(int Id, string Name, string Manufacturer, string OriginCounty);
+
 public record MachineDto(
     int Id,
+    int ModelId,
     string Name,
     string Location,
-    string Model,
+    string Address,
+    string? Coordinates,
     MachinePaymentType PaymentType,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
-    string Manufacturer,
-    string Modem,
+    string? Modem,
+    string? WorkTime,
+    MachineTimezone Timezone,
+    MachinePriority Priority,
+    MachineWorkMode WorkMode,
+    string? Notes,
     long EntryDate,
-    long ManufactureDate,
     long StartDate,
-    long? LastInspectionDate,
+    long ManufactureDate,
+    long? LastMaintenanceDate,
     long? NextMaintenanceDate,
-    int InspectionIntervalMonths,
-    int ResourceHours,
-    int MaintenanceHours,
+    int? InspectionIntervalMonths,
+    int? ResourceHours,
     MachineStatus Status,
-    string OriginCounty,
-    int? LastInspectedById);
+    int? LastMaintenanceId);
+
+public record MachineWithModelDto(
+    int Id,
+    MachineModelDto ModelDto,
+    string Name,
+    string Location,
+    MachinePaymentType PaymentType,
+    decimal TotalEarn,
+    string SerialNumber,
+    string InventoryNumber,
+    string? Modem,
+    string? WorkTime,
+    MachineTimezone Timezone,
+    MachinePriority Priority,
+    MachineWorkMode WorkMode,
+    string? Notes,
+    long EntryDate,
+    long StartDate,
+    long ManufactureDate,
+    long? LastMaintenanceDate,
+    long? NextMaintenanceDate,
+    int? InspectionIntervalMonths,
+    int? ResourceHours,
+    MachineStatus Status,
+    int? LastMaintenanceId);
 
 // Передаваемые данные
 
-public record GetMachinesResponse(MachineDto[] Machines, int FoundCount, int TotalCount);
+public record GetMachinesResponse(MachineWithModelDto[] Machines, int FoundCount, int TotalCount);
 
 // Получаемые данные
 
@@ -41,67 +72,36 @@ public class GetMachinesRequestDto
 
 public class CreateMachineRequestDto
 {
+    [Required] [Range(0, int.MaxValue)] public int ModelId { get; set; }
+    
     [Required] [MaxLength(50)] public required string Name { get; set; }
-
-    [Required] public required string Manufacturer { get; set; }
-
-    [Required] public required string Model { get; set; }
-
-    [Required] public required string WorkMode { get; set; }
-
-    [Required] public required string Address { get; set; }
 
     [Required] public required string Location { get; set; }
 
-    public required string Coordinates { get; set; }
+    [Required] public required string Address { get; set; }
 
-    [Required] public required string MachineNumber { get; set; }
+    public string? Coordinates { get; set; }
+    
+    public required MachinePaymentType PaymentType { get; set; }
+
+    [Required] public required string SerialNumber { get; set; }
+    [Required] public required string InventoryNumber { get; set; }
+    
+    public string? Modem { get; set; }
 
     public required string WorkTime { get; set; }
 
-    [Required]
     public required MachineTimezone Timezone { get; set; }
-    
-    [Required]
+
     public required MachinePriority Priority { get; set; }
+
+    public required MachineWorkMode WorkMode { get; set; }
+
+    public string? Notes { get; set; }
+    
+    public int ManufactureDate { get; set; }
 
     // хз
     // public required string ProductMatrix { get; set; }
     // [Required]
-}
-
-public enum MachinePriority
-{
-    High,
-    Medium,
-    Low
-}
-
-public enum MachineTimezone
-{
-    UTC_12,
-    UTC_11,
-    UTC_10,
-    UTC_9,
-    UTC_8,
-    UTC_7,
-    UTC_6,
-    UTC_5,
-    UTC_4,
-    UTC_3,
-    UTC_2,
-    UTC_1,
-    UTC_0,
-    UTC1,
-    UTC2,
-    UTC3,
-    UTC4,
-    UTC5,
-    UTC6,
-    UTC7,
-    UTC8,
-    UTC9,
-    UTC10,
-    UTC11,
-    UTC12,
 }

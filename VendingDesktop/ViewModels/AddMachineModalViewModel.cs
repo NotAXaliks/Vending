@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using VendingDesktop.Dtos;
 
 namespace VendingDesktop.ViewModels;
 
@@ -14,19 +15,19 @@ public class AddMachineModalViewModel : ViewModelBase
     private string _location = string.Empty;
     private string _coordinates = string.Empty;
     private string _machineNumber = string.Empty;
-    private string _workTime = string.Empty;
+    private string _workTime = "Стандартный";
     private string _timezone = "UTC +3:00";
     private string _productMatrix = string.Empty;
     private string _rfidInspectionCard = string.Empty;
     private string _rfidCollectionCard = string.Empty;
     private string _rfidLoadingCard = string.Empty;
     private string _kitOnlineId = string.Empty;
-    private string _priority = string.Empty;
+    private string _priority = "Средний";
     private string _notes = string.Empty;
 
     public string[] ManufacturerOptions { get; set; } = ["Manufacturer1", "Manufacturer2", "Manufacturer3"];
     public string[] ModelOptions { get; set; } = ["Model1", "Model2", "Model3"];
-    public string[] WorkModeOptions { get; set; } = ["WorkMode1", "WorkMode2", "WorkMode3"];
+    public string[] WorkModeOptions { get; set; } = ["Стандартный"];
     public string[] ProductMatrixOptions { get; set; } = ["ProductMatrix1", "ProductMatrix2", "ProductMatrix3"];
     public string[] PriorityOptions { get; set; } = ["Высокий", "Средний", "Низкий"];
 
@@ -141,6 +142,13 @@ public class AddMachineModalViewModel : ViewModelBase
     {
         get => _notes;
         set => SetProperty(ref _notes, value);
+    }
+
+    public MachineWorkMode WorkModeToEnum(string workModeString)
+    {
+        if (workModeString == WorkModeOptions[0]) return MachineWorkMode.Standart;
+
+        return MachineWorkMode.Standart;
     }
 
     public MachinePriority PriorityToEnum(string priorityString)

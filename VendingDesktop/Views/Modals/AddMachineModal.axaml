@@ -261,7 +261,7 @@
                     <!-- 10 Строка -->
                     <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3">
                         <TextBlock Text="Примечания" />
-                        <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True"
+                        <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True" MaxLength="1000"
                                  Text="{Binding Notes}" />
                     </StackPanel>
                 </Grid>

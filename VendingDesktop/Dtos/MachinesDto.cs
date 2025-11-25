@@ -4,15 +4,19 @@ namespace VendingDesktop.Dtos;
 
 public record MachineDto(
     int Id,
+    int ModelId,
     string Name,
     string Location,
-    string Model,
     MachinePaymentType PaymentType,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
-    string Manufacturer,
     string Modem,
+    string? WorkTime,
+    MachineTimezone Timezone,
+    MachinePriority Priority,
+    MachineWorkMode WorkMode,
+    string? Notes,
     long EntryDate,
     long ManufactureDate,
     long StartDate,
@@ -22,9 +26,7 @@ public record MachineDto(
     int ResourceHours,
     int MaintenanceHours,
     MachineStatus Status,
-    string OriginCounty,
     int? LastInspectedById);
- 
 
 [JsonConverter(typeof(JsonStringEnumConverter<MachinePaymentType>))]
 public enum MachinePaymentType
@@ -40,6 +42,50 @@ public enum MachineStatus
     Operational,
     Broken,
     InService
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<MachineWorkMode>))]
+public enum MachineWorkMode
+{
+    Standart
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<MachineTimezone>))]
+public enum MachineTimezone
+{
+    UTC_12,
+    UTC_11,
+    UTC_10,
+    UTC_9,
+    UTC_8,
+    UTC_7,
+    UTC_6,
+    UTC_5,
+    UTC_4,
+    UTC_3,
+    UTC_2,
+    UTC_1,
+    UTC_0,
+    UTC1,
+    UTC2,
+    UTC3,
+    UTC4,
+    UTC5,
+    UTC6,
+    UTC7,
+    UTC8,
+    UTC9,
+    UTC10,
+    UTC11,
+    UTC12,
+}
+
+[JsonConverter(typeof(JsonStringEnumConverter<MachinePriority>))]
+public enum MachinePriority
+{
+    High,
+    Medium,
+    Low
 }
 
 // Получаемые данные
