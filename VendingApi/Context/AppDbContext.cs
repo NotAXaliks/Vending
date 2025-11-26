@@ -9,15 +9,22 @@ public class AppDbContext : DbContext
     {
     }
     
+    public virtual DbSet<MachineModels> MachineModels { get; set; }
     public virtual DbSet<Machines> Machines { get; set; }
     public virtual DbSet<Maintenances> Maintenances { get; set; }
     public virtual DbSet<Products> Products { get; set; }
     public virtual DbSet<Sales> Sales { get; set; }
-    public virtual DbSet<Users> Users { get; set; }
     public virtual DbSet<Sessions> Sessions { get; set; }
+    public virtual DbSet<Users> Users { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<Machines>()
+            .HasOne(m => m.LastMaintenance)
+            .WithOne()
+            .HasForeignKey<Machines>(m => m.LastMaintenanceId)
+            .OnDelete(DeleteBehavior.SetNull);
+
         // По умолчанию
         modelBuilder.Entity<Users>()
             .Property(u => u.Role)

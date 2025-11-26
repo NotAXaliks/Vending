@@ -1,7 +1,8 @@
 using System;
-using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
+using VendingDesktop.Dtos;
+using VendingDesktop.services;
 using VendingDesktop.ViewModels;
 
 namespace VendingDesktop.Views.Modals;
@@ -21,7 +22,7 @@ public partial class AddMachineModal : UserControl
         CloseModal();
     }
 
-    private void OnCreateClick(object? sender, RoutedEventArgs e)
+    private async void OnCreateClick(object? sender, RoutedEventArgs e)
     {
         if (DataContext is AddMachineModalViewModel vm)
         {
@@ -31,6 +32,10 @@ public partial class AddMachineModal : UserControl
                 ErrorsBlock.Text = string.Join(Environment.NewLine, errors);
                 return;
             }
+
+            var machinesResponse = await MachinesService.CreateMachine(new CreateMachineRequest
+                { ModelId = vm. };
+            if (machinesResponse.Data == null) return;
         }
 
         CloseModal();

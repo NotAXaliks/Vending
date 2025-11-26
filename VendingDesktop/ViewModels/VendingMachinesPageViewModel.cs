@@ -16,7 +16,7 @@ public class VendingMachinesPageViewModel : ViewModelBase
     public ObservableCollection<MachineWithIndexItemTemplate> Machines { get; set; } = [];
 
     public int[] PageSizeOptions { get; } = [10, 25, 50, 100];
-
+    
     public int PageSize
     {
         get => _pageSize;
@@ -85,14 +85,15 @@ public class VendingMachinesPageViewModel : ViewModelBase
             }
         }
     }
-    
+
     public int TotalPages => (int)Math.Ceiling((double)TotalMachines / PageSize);
 
     public string TotalFoundText => $"Всего найдено: {TotalMachines} шт.";
 
-    public string PaginationText => $"Записи с {(Page - 1) * PageSize + 1} до {Math.Min(Page * PageSize, FoundCount)} из {FoundCount} записей";
+    public string PaginationText =>
+        $"Записи с {(Page - 1) * PageSize + 1} до {Math.Min(Page * PageSize, FoundCount)} из {FoundCount} записей";
 
-    public void UpdateMachines(MachineDto[] machines, int foundMachines, int totalMachines)
+    public void UpdateMachines(MachineWithModelDto[] machines, int foundMachines, int totalMachines)
     {
         FoundCount = foundMachines;
         TotalMachines = totalMachines;
@@ -102,10 +103,10 @@ public class VendingMachinesPageViewModel : ViewModelBase
         var machineItems = machines.Select((machine, i) => new MachineWithIndexItemTemplate(
             machine.Id,
             machine.Name,
-            machine.Model,
-            machine.Manufacturer,
-            machine.Modem,
-            machine.Location,
+            machine.Model.Name,
+            machine.Model.Manufacturer,
+            machine.Modem ?? "-1",
+            machine.Location + " " + machine.Address,
             DateTimeOffset.FromUnixTimeMilliseconds(machine.StartDate).ToString("dd.MM.yyyy"),
             i
         ));

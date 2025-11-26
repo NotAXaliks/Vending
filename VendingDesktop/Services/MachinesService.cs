@@ -15,4 +15,14 @@ public class MachinesService
 
         return machinesResponse;
     }
+
+    public static async Task<ApiResponse<MachineWithModelDto>> CreateMachine(CreateMachineRequest request)
+    {
+        var machinesResponse = await NetService.Patch<MachineWithModelDto>("/machines", request);
+
+        if (machinesResponse.Data == null)
+            Console.WriteLine($"Error while fetching PATCH /machines: {machinesResponse.Error}");
+
+        return machinesResponse;
+    }
 }

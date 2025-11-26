@@ -75,6 +75,7 @@ public partial class VendingMachinesPageView : UserControl
         {
             OnClose = () => Refresh(),
         };
+        
         MainGrid.Children.Add(addMachine);
     }
 }

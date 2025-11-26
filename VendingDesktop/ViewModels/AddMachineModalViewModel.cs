@@ -9,7 +9,6 @@ public class AddMachineModalViewModel : ViewModelBase
 {
     private string _name = string.Empty;
     private string _manufacturer = string.Empty;
-    private string _model = string.Empty;
     private string _workMode = string.Empty;
     private string _address = string.Empty;
     private string _location = string.Empty;
@@ -26,7 +25,8 @@ public class AddMachineModalViewModel : ViewModelBase
     private string _notes = string.Empty;
 
     public string[] ManufacturerOptions { get; set; } = ["Manufacturer1", "Manufacturer2", "Manufacturer3"];
-    public string[] ModelOptions { get; set; } = ["Model1", "Model2", "Model3"];
+    public ObservableCollection<ModelOptionTemplate> ModelOptions { get; set; } = [new("Model1", 1), new("Model2", 2)];
+    public ModelOptionTemplate? SelectedModel = null;
     public string[] WorkModeOptions { get; set; } = ["Стандартный"];
     public string[] ProductMatrixOptions { get; set; } = ["ProductMatrix1", "ProductMatrix2", "ProductMatrix3"];
     public string[] PriorityOptions { get; set; } = ["Высокий", "Средний", "Низкий"];
@@ -52,12 +52,6 @@ public class AddMachineModalViewModel : ViewModelBase
     {
         get => _manufacturer;
         set => SetProperty(ref _manufacturer, value);
-    }
-
-    public string Model
-    {
-        get => _model;
-        set => SetProperty(ref _model, value);
     }
 
     public string WorkMode
@@ -156,7 +150,7 @@ public class AddMachineModalViewModel : ViewModelBase
         if (priorityString == PriorityOptions[0]) return MachinePriority.High;
         if (priorityString == PriorityOptions[1]) return MachinePriority.Medium;
         if (priorityString == PriorityOptions[2]) return MachinePriority.Low;
-        
+
         return MachinePriority.Medium;
     }
 
@@ -187,7 +181,7 @@ public class AddMachineModalViewModel : ViewModelBase
         if (timezoneString == TimezoneOptions[22]) return MachineTimezone.UTC10;
         if (timezoneString == TimezoneOptions[23]) return MachineTimezone.UTC11;
         if (timezoneString == TimezoneOptions[24]) return MachineTimezone.UTC12;
-        
+
         // Отправляем по умолчанию UTC+3
         return MachineTimezone.UTC3;
     }
@@ -250,3 +244,5 @@ public enum MachineTimezone
 }
 
 public record PaymentOptionTemplate(string Name, bool IsChecked = false);
+
+public record ModelOptionTemplate(string Name, int ModelId, bool IsSelected = false);

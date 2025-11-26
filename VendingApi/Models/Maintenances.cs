@@ -1,9 +1,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace VendingApi.Models;
 
 // Готово
+[Index(nameof(Date), IsUnique = true)]
 public class Maintenances
 {
     [Key]

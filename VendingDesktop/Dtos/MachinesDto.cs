@@ -1,17 +1,22 @@
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace VendingDesktop.Dtos;
+
+public record MachineModelDto(int Id, string Name, string Manufacturer, string OriginCounty);
 
 public record MachineDto(
     int Id,
     int ModelId,
     string Name,
     string Location,
+    string Address,
+    string? Coordinates,
     MachinePaymentType PaymentType,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
-    string Modem,
+    string? Modem,
     string? WorkTime,
     MachineTimezone Timezone,
     MachinePriority Priority,
@@ -20,13 +25,39 @@ public record MachineDto(
     long EntryDate,
     long ManufactureDate,
     long StartDate,
-    long? LastInspectionDate,
+    long? LastMaintenanceDate,
     long? NextMaintenanceDate,
-    int InspectionIntervalMonths,
-    int ResourceHours,
-    int MaintenanceHours,
+    int? InspectionIntervalMonths,
+    int? ResourceHours,
     MachineStatus Status,
-    int? LastInspectedById);
+    int? LastMaintenanceId);
+
+public record MachineWithModelDto(
+    int Id,
+    MachineModelDto Model,
+    string Name,
+    string Location,
+    string Address,
+    string? Coordinates,
+    MachinePaymentType PaymentType,
+    decimal TotalEarn,
+    string SerialNumber,
+    string InventoryNumber,
+    string? Modem,
+    string? WorkTime,
+    MachineTimezone Timezone,
+    MachinePriority Priority,
+    MachineWorkMode WorkMode,
+    string? Notes,
+    long EntryDate,
+    long ManufactureDate,
+    long StartDate,
+    long? LastMaintenanceDate,
+    long? NextMaintenanceDate,
+    int? InspectionIntervalMonths,
+    int? ResourceHours,
+    MachineStatus Status,
+    int? LastMaintenanceId);
 
 [JsonConverter(typeof(JsonStringEnumConverter<MachinePaymentType>))]
 public enum MachinePaymentType
@@ -90,12 +121,7 @@ public enum MachinePriority
 
 // Получаемые данные
 
-public class GetMachinesResponse
-{
-    public required MachineDto[] Machines { get; set; }
-    public int FoundCount { get; set; }
-    public int TotalCount { get; set; }
-}
+public record GetMachinesResponse(MachineWithModelDto[] Machines, int FoundCount, int TotalCount);
 
 // Передаваемые данные
 
@@ -104,4 +130,24 @@ public class GetMachinesRequest
     public string? Filter { get; set; }
     public int? Show { get; set; }
     public int? Page { get; set; }
+}
+
+public class CreateMachineRequest
+{
+    public int ModelId { get; set; }
+    public required string Name { get; set; }
+    public required string Location { get; set; }
+    public required string Address { get; set; }
+    public string? Coordinates { get; set; }
+    public required MachinePaymentType PaymentType { get; set; }
+    public required string SerialNumber { get; set; }
+    public required string InventoryNumber { get; set; }
+    public string? Modem { get; set; }
+    public required string WorkTime { get; set; }
+    public required MachineTimezone Timezone { get; set; }
+    public required MachinePriority Priority { get; set; }
+    public required MachineWorkMode WorkMode { get; set; }
+    public string? Notes { get; set; }
+    public long ManufactureDate { get; set; }
+    public long? NextMaintenanceDate { get; set; }
 }

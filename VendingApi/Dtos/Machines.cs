@@ -23,8 +23,8 @@ public record MachineDto(
     MachineWorkMode WorkMode,
     string? Notes,
     long EntryDate,
-    long StartDate,
     long ManufactureDate,
+    long StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -34,9 +34,11 @@ public record MachineDto(
 
 public record MachineWithModelDto(
     int Id,
-    MachineModelDto ModelDto,
+    MachineModelDto Model,
     string Name,
     string Location,
+    string Address,
+    string? Coordinates,
     MachinePaymentType PaymentType,
     decimal TotalEarn,
     string SerialNumber,
@@ -48,8 +50,8 @@ public record MachineWithModelDto(
     MachineWorkMode WorkMode,
     string? Notes,
     long EntryDate,
-    long StartDate,
     long ManufactureDate,
+    long StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -73,7 +75,7 @@ public class GetMachinesRequestDto
 public class CreateMachineRequestDto
 {
     [Required] [Range(0, int.MaxValue)] public int ModelId { get; set; }
-    
+
     [Required] [MaxLength(50)] public required string Name { get; set; }
 
     [Required] public required string Location { get; set; }
@@ -81,12 +83,12 @@ public class CreateMachineRequestDto
     [Required] public required string Address { get; set; }
 
     public string? Coordinates { get; set; }
-    
+
     public required MachinePaymentType PaymentType { get; set; }
 
     [Required] public required string SerialNumber { get; set; }
     [Required] public required string InventoryNumber { get; set; }
-    
+
     public string? Modem { get; set; }
 
     public required string WorkTime { get; set; }
@@ -98,10 +100,8 @@ public class CreateMachineRequestDto
     public required MachineWorkMode WorkMode { get; set; }
 
     public string? Notes { get; set; }
-    
-    public int ManufactureDate { get; set; }
 
-    // хз
-    // public required string ProductMatrix { get; set; }
-    // [Required]
+    [Required] public long ManufactureDate { get; set; }
+    
+    [Required] public long? NextMaintenanceDate { get; set; }
 }

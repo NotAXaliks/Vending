@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VendingApi.Context;
 using VendingApi.Dtos;
+using VendingApi.Models;
 
 namespace VendingApi.Controllers;
 
@@ -48,6 +49,8 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Id: m.Id,
             Name: m.Name,
             Location: m.Location,
+            Address: m.Address,
+            Coordinates: m.Coordinates,
             PaymentType: m.PaymentType,
             TotalEarn: m.TotalEarn,
             SerialNumber: m.SerialNumber,
@@ -66,8 +69,8 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             InspectionIntervalMonths: m.InspectionIntervalMonths,
             ResourceHours: m.ResourceHours,
             Status: m.Status,
-            
-            ModelDto: new MachineModelDto(
+            LastMaintenanceId: m.LastMaintenanceId,
+            Model: new MachineModelDto(
                 Id: m.Model.Id,
                 Name: m.Model.Name,
                 Manufacturer: m.Model.Manufacturer,
@@ -93,8 +96,32 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Regex.IsMatch(dto.WorkTime, @"(?:[01]\d|2[0-3]):[0-5]\d-[0-5]\d:[0-5]\d"))
             return SendError("Invalid WorkTime");
         /* Конец валидации */
-        
-        
+
+        var model = await DatabaseContext.MachineModels.FindAsync(dto.ModelId);
+        if (model == null) return SendError("Model not found");
+
+        var machine = new Machines
+        {
+            ModelId = dto.ModelId,
+            Name = dto.Name,
+            Location = dto.Location,
+            Address = dto.Address,
+            Coordinates = dto.Coordinates,
+            PaymentType = dto.PaymentType,
+            SerialNumber = dto.SerialNumber,
+            InventoryNumber = dto.InventoryNumber,
+            Modem = dto.Modem,
+            WorkTime = dto.WorkTime,
+            Timezone = dto.Timezone,
+            Priority = dto.Priority,
+            WorkMode = dto.WorkMode,
+            Notes = dto.Notes,
+            ManufactureDate = DateTimeOffset.FromUnixTimeMilliseconds(dto.ManufactureDate),
+            NextMaintenanceDate = dto.NextMaintenanceDate is { } date ? DateTimeOffset.FromUnixTimeMilliseconds(date) : null,
+        };
+
+        await DatabaseContext.Machines.AddAsync(machine);
+        await DatabaseContext.SaveChangesAsync();
 
         return Ok();
     }

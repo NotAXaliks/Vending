@@ -65,7 +65,7 @@ public class Machines
 
     public int? LastMaintenanceId { get; set; }
 
-    public Maintenances? LastMaintenance { get; set; }
+    [ForeignKey(nameof(LastMaintenanceId))] public Maintenances? LastMaintenance { get; set; }
 
     public virtual ICollection<Sales> Sales { get; set; } = [];
     public virtual ICollection<Maintenances> Maintenances { get; set; } = [];

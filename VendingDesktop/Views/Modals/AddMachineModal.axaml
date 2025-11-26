@@ -74,7 +74,7 @@
                         </TextBlock>
                         <ComboBox
                             ItemsSource="{Binding ModelOptions}"
-                            SelectedItem="{Binding Model}" />
+                            SelectedItem="{Binding SelectedModel?.Id, TargetNullValue=fsd}" />
                     </StackPanel>
 
                     <!-- 2 Строка -->
