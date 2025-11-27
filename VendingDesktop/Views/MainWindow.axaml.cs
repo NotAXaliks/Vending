@@ -10,7 +10,18 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
-        DataContext = new MainWindowViewModel();
+    }
+
+    private void OnAccountPopupClosed(object? sender, EventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.IsAccountPageListOpen = false;
+    }
+
+    private void OpenAccountPopup(object? sender, PointerPressedEventArgs e)
+    {
+        if (DataContext is MainWindowViewModel vm)
+            vm.IsAccountPageListOpen = true;
     }
 
     private void PageSelected(object? sender, PointerPressedEventArgs e)
@@ -20,17 +31,5 @@ public partial class MainWindow : Window
             if (item.HasChildren) item.Toggle();
             else (DataContext as MainWindowViewModel)?.SelectPage(item);
         }
-    }
-
-    private void ToggleAccountPageListCommand(object? sender, PointerPressedEventArgs e)
-    {
-        if (DataContext is MainWindowViewModel vm)
-            vm.IsAccountPageListOpen = !vm.IsAccountPageListOpen;
-    }
-
-    private void OnAccountPopupClosed(object? sender, EventArgs e)
-    {
-        if (DataContext is MainWindowViewModel vm)
-            vm.IsAccountPageListOpen = false;
     }
 }

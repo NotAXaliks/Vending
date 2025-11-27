@@ -1,4 +1,4 @@
-﻿using Avalonia.Controls;
+using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Threading;
 using VendingDesktop.Dtos;
@@ -71,7 +71,7 @@ public partial class VendingMachinesPageView : UserControl
 
     private void OnCreateMachineClick(object? sender, RoutedEventArgs e)
     {
-        var addMachine = new AddMachineModal()
+        var addMachine = new AddMachineModalView()
         {
             OnClose = () => Refresh(),
         };

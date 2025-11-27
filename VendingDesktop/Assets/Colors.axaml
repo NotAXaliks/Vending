@@ -4,6 +4,7 @@
         <Style.Resources>
             <SolidColorBrush x:Key="PrimaryColor" Color="#3b86c6" />
             <SolidColorBrush x:Key="PrimaryBackgroundColor" Color="#f6f6f6" />
+            <SolidColorBrush x:Key="PrimaryDarkBackgroundColor" Color="#a6a6a6" />
         </Style.Resources>
     </Style>
 </Styles>
