@@ -32,6 +32,12 @@
                     <Setter Property="HorizontalAlignment" Value="Stretch" />
                     <Setter Property="Margin" Value="0 5 0 15" />
                 </Style>
+                <Style Selector="CalendarDatePicker">
+                    <Setter Property="CornerRadius" Value="5" />
+                    <Setter Property="BorderBrush" Value="#d3d3d3" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                    <Setter Property="Margin" Value="0 5 0 15" />
+                </Style>
 
                 <Style Selector="Button">
                     <Setter Property="BorderThickness" Value="1" />
@@ -52,7 +58,7 @@
 
             <!-- Таблица -->
             <Border Grid.Row="1" Background="White" Padding="15">
-                <Grid ColumnDefinitions="* * *" RowDefinitions="* * * * * * * * * *" ColumnSpacing="15">
+                <Grid ColumnDefinitions="* * *" RowDefinitions="* * * * * * * * * * *" ColumnSpacing="15">
                     <!-- 1 Строка -->
                     <StackPanel Grid.Row="0" Grid.Column="0">
                         <TextBlock>
@@ -77,7 +83,13 @@
                         </TextBlock>
                         <ComboBox
                             ItemsSource="{Binding ModelOptions}"
-                            SelectedItem="{Binding SelectedModel.ModelId, TargetNullValue=fsd}" />
+                            SelectedItem="{Binding SelectedModel}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
 
                     <!-- 2 Строка -->
@@ -88,7 +100,13 @@
                         </TextBlock>
                         <ComboBox
                             ItemsSource="{Binding WorkModeOptions}"
-                            SelectedItem="{Binding WorkMode}" />
+                            SelectedItem="{Binding SelectedWorkMode}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Grid.Column="1">
                         <TextBlock>
@@ -128,27 +146,59 @@
                     <!-- 4 Строка -->
                     <StackPanel Grid.Row="3" Grid.Column="0">
                         <TextBlock>
-                            <Run Text="Номер автомата" />
+                            <Run Text="Инвентарный номер" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox Text="{Binding MachineNumber}" />
+                        <TextBox Text="{Binding InventoryNumber}" />
                     </StackPanel>
                     <StackPanel Grid.Row="3" Grid.Column="1">
+                        <TextBlock>
+                            <Run Text="Дата производства" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <CalendarDatePicker DisplayDateStart="1.1.1970" DisplayDateEnd="{Binding CurrentDate}"
+                                            SelectedDate="{Binding ManufactureDateString}"
+                                            CustomDateFormatString="dd.mm.yyyy" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="3" Grid.Column="2">
+                        <TextBlock>
+                            <Run Text="Дата след. обслуживания" />
+                        </TextBlock>
+                        <CalendarDatePicker DisplayDateStart="{Binding CurrentDate}"
+                                            SelectedDate="{Binding NextMaintenanceDateString}"
+                                            CustomDateFormatString="dd.mm.yyyy" />
+                    </StackPanel>
+
+                    <!-- 5 Строка -->
+                    <StackPanel Grid.Row="4" Grid.Column="0">
+                        <TextBlock>
+                            <Run Text="Серийный номер" />
+                            <Run Text="*" Foreground="Red" />
+                        </TextBlock>
+                        <TextBox Text="{Binding SerialNumber}" />
+                    </StackPanel>
+                    <StackPanel Grid.Row="4" Grid.Column="1">
                         <TextBlock Text="Время работы (Формат: 08:00-22:00)" />
                         <MaskedTextBox Mask="99:99-99:99" Text="{Binding WorkTime}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="3" Grid.Column="2">
+                    <StackPanel Grid.Row="4" Grid.Column="2">
                         <TextBlock>
                             <Run Text="Часовой пояс" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
                         <ComboBox
                             ItemsSource="{Binding TimezoneOptions}"
-                            SelectedItem="{Binding Timezone}" />
+                            SelectedItem="{Binding SelectedTimezone}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
 
-                    <!-- 5 Строка -->
-                    <StackPanel Grid.Row="4" Grid.Column="0">
+                    <!-- 6 Строка -->
+                    <StackPanel Grid.Row="5" Grid.Column="0">
                         <TextBlock>
                             <Run Text="Товарная матрица" />
                             <Run Text="*" Foreground="Red" />
@@ -157,14 +207,14 @@
                             ItemsSource="{Binding ProductMatrixOptions}"
                             SelectedItem="{Binding ProductMatrix}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="4" Grid.Column="1">
+                    <StackPanel Grid.Row="5" Grid.Column="1">
                         <TextBlock Text="Шаблон крит. значений" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не установлена" />
                             <ComboBoxItem Content="Любая" />
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Row="4" Grid.Column="2">
+                    <StackPanel Grid.Row="5" Grid.Column="2">
                         <TextBlock Text="Шаблон уведомлений" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не установлена" />
@@ -172,22 +222,22 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <!-- 6 Строка -->
-                    <StackPanel Grid.Row="5" Grid.Column="0">
+                    <!-- 7 Строка -->
+                    <StackPanel Grid.Row="6" Grid.Column="0">
                         <TextBlock Text="Клиент" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не задан" />
                             <ComboBoxItem Content="Любая" />
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Row="5" Grid.Column="1">
+                    <StackPanel Grid.Row="6" Grid.Column="1">
                         <TextBlock Text="Менеджер" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не задан" />
                             <ComboBoxItem Content="Любая" />
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Row="5" Grid.Column="2">
+                    <StackPanel Grid.Row="6" Grid.Column="2">
                         <TextBlock Text="Инженер" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не задан" />
@@ -195,15 +245,15 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <!-- 7 Строка -->
-                    <StackPanel Grid.Row="6" Grid.Column="0">
+                    <!-- 8 Строка -->
+                    <StackPanel Grid.Row="7" Grid.Column="0">
                         <TextBlock Text="Техник-оператор" />
                         <ComboBox SelectedIndex="0">
                             <ComboBoxItem Content="Не задан" />
                             <ComboBoxItem Content="Любая" />
                         </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="2">
+                    <StackPanel Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2">
                         <TextBlock>
                             <Run Text="Платежные системы" />
                             <Run Text="*" Foreground="Red" />
@@ -225,44 +275,50 @@
                         </Border>
                     </StackPanel>
 
-                    <!-- 8 Строка -->
-                    <StackPanel Grid.Row="7" Grid.Column="0">
+                    <!-- 9 Строка -->
+                    <StackPanel Grid.Row="8" Grid.Column="0">
                         <TextBlock Text="RFID карты обслуживания" />
                         <TextBox Text="{Binding RfidInspectionCard}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="7" Grid.Column="1">
+                    <StackPanel Grid.Row="8" Grid.Column="1">
                         <TextBlock Text="RFID карты инкассации" />
                         <TextBox Text="{Binding RfidCollectionCard}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="7" Grid.Column="2">
+                    <StackPanel Grid.Row="8" Grid.Column="2">
                         <TextBlock Text="RFID карты загрузки" />
                         <TextBox Text="{Binding RfidLoadingCard}" />
                     </StackPanel>
 
-                    <!-- 9 Строка -->
-                    <StackPanel Grid.Row="8" Grid.Column="0">
+                    <!-- 10 Строка -->
+                    <StackPanel Grid.Row="9" Grid.Column="0">
                         <TextBlock Text="Id кассы Kit Online (только в случае жесткой привязки)" />
                         <TextBox Text="{Binding KitOnlineId}" />
                     </StackPanel>
-                    <StackPanel Grid.Row="8" Grid.Column="1">
+                    <StackPanel Grid.Row="9" Grid.Column="1">
                         <TextBlock>
                             <Run Text="Приоритет обслуживания" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
                         <ComboBox
                             ItemsSource="{Binding PriorityOptions}"
-                            SelectedItem="{Binding Priority}" />
+                            SelectedItem="{Binding SelectedPriority}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Name}" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
                     </StackPanel>
-                    <StackPanel Grid.Row="8" Grid.Column="2">
+                    <StackPanel Grid.Row="9" Grid.Column="2">
                         <TextBlock>
                             <Run Text="Модем" />
                             <Run Text="*" Foreground="Red" />
                         </TextBlock>
-                        <TextBox IsEnabled="False" />
+                        <TextBox IsEnabled="False" Text="{Binding Modem}" />
                     </StackPanel>
 
-                    <!-- 10 Строка -->
-                    <StackPanel Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="3">
+                    <!-- 11 Строка -->
+                    <StackPanel Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3">
                         <TextBlock Text="Примечания" />
                         <TextBox MinHeight="70" MaxHeight="140" AcceptsReturn="True" AcceptsTab="True" MaxLength="1000"
                                  Text="{Binding Notes}" />

@@ -11,7 +11,7 @@ public record MachineDto(
     string Location,
     string Address,
     string? Coordinates,
-    MachinePaymentType PaymentType,
+    MachinePaymentType[] PaymentTypes,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
@@ -23,7 +23,7 @@ public record MachineDto(
     string? Notes,
     long EntryDate,
     long ManufactureDate,
-    long StartDate,
+    long? StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -38,7 +38,7 @@ public record MachineWithModelDto(
     string Location,
     string Address,
     string? Coordinates,
-    MachinePaymentType PaymentType,
+    MachinePaymentType[] PaymentTypes,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
@@ -50,7 +50,7 @@ public record MachineWithModelDto(
     string? Notes,
     long EntryDate,
     long ManufactureDate,
-    long StartDate,
+    long? StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -61,9 +61,10 @@ public record MachineWithModelDto(
 [JsonConverter(typeof(JsonStringEnumConverter<MachinePaymentType>))]
 public enum MachinePaymentType
 {
-    Cash,
+    Coins,
+    Bill,
     Card,
-    CashAndCard
+    QR,
 }
 
 [JsonConverter(typeof(JsonStringEnumConverter<MachineStatus>))]
@@ -95,7 +96,7 @@ public enum MachineTimezone
     UTC_3,
     UTC_2,
     UTC_1,
-    UTC_0,
+    UTC,
     UTC1,
     UTC2,
     UTC3,
@@ -138,7 +139,7 @@ public class CreateMachineRequest
     public required string Location { get; set; }
     public required string Address { get; set; }
     public string? Coordinates { get; set; }
-    public required MachinePaymentType PaymentType { get; set; }
+    public required MachinePaymentType[] PaymentTypes { get; set; }
     public required string SerialNumber { get; set; }
     public required string InventoryNumber { get; set; }
     public string? Modem { get; set; }

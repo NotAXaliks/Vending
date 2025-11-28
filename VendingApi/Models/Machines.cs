@@ -25,7 +25,7 @@ public class Machines
 
     public string? Coordinates { get; set; }
 
-    public MachinePaymentType PaymentType { get; set; }
+    public MachinePaymentType[] PaymentTypes { get; set; } = [];
 
     [Range(0, int.MaxValue)]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -53,7 +53,7 @@ public class Machines
     public DateTimeOffset EntryDate { get; set; }
 
     public DateTimeOffset ManufactureDate { get; set; }
-    public DateTimeOffset StartDate { get; set; }
+    public DateTimeOffset? StartDate { get; set; }
     public DateTimeOffset? LastMaintenanceDate { get; set; }
     public DateTimeOffset? NextMaintenanceDate { get; set; }
 
@@ -73,9 +73,10 @@ public class Machines
 
 public enum MachinePaymentType
 {
-    Cash,
+    Coins,
+    Bill,
     Card,
-    CashAndCard
+    QR,
 }
 
 public enum MachineStatus

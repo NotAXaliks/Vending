@@ -69,6 +69,26 @@ public static class NetService
             return new ApiResponse<T>(default, $"Unknown Error: {error}");
         }
     }
+    
+    public static async Task<ApiResponse<T>> Put<T>(string path, object? data = null)
+    {
+        try
+        {
+            var serializedData = JsonSerializer.Serialize(data ?? new { });
+            var response = await HttpClient.PutAsync(ApiBaseUrl + path,
+                new StringContent(serializedData, Encoding.UTF8, "application/json"));
+
+            return await GetResponse<T>(response);
+        }
+        catch (HttpRequestException error)
+        {
+            return new ApiResponse<T>(default, $"Request Error: {error}");
+        }
+        catch (Exception error)
+        {
+            return new ApiResponse<T>(default, $"Unknown Error: {error}");
+        }
+    }
 
     private static async Task<ApiResponse<T>> GetResponse<T>(HttpResponseMessage response)
     {

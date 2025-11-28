@@ -32,16 +32,17 @@ public partial class VendingMachinesPageViewModel : ViewModelBase
 
         Machines.Clear();
 
-        var machineItems = machines.Select((machine, i) => new MachineWithIndexItemTemplate(
-            machine.Id,
-            machine.Name,
-            machine.Model.Name,
-            machine.Model.Manufacturer,
-            machine.Modem ?? "-1",
-            machine.Location + " " + machine.Address,
-            DateTimeOffset.FromUnixTimeMilliseconds(machine.StartDate).ToString("dd.MM.yyyy"),
-            i
-        ));
+        var machineItems = machines.Select((machine, i) =>
+            new MachineWithIndexItemTemplate(
+                Id: machine.Id,
+                Name: machine.Name,
+                Model: machine.Model.Name,
+                Manufacturer: machine.Model.Manufacturer,
+                Modem: string.IsNullOrWhiteSpace(machine.Modem) ? "-1" : machine.Modem,
+                Location: $"{machine.Location} {machine.Address}",
+                StartDate: machine.StartDate == null ? "Не работает" : DateTimeOffset.FromUnixTimeMilliseconds((long)machine.StartDate).ToString("dd.MM.yyyy"),
+                Index: i
+            ));
 
         foreach (var item in machineItems)
         {

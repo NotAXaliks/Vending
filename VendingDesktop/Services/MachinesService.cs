@@ -18,10 +18,10 @@ public class MachinesService
 
     public static async Task<ApiResponse<MachineWithModelDto>> CreateMachine(CreateMachineRequest request)
     {
-        var machinesResponse = await NetService.Patch<MachineWithModelDto>("/machines", request);
+        var machinesResponse = await NetService.Put<MachineWithModelDto>("/machines", request);
 
         if (machinesResponse.Data == null)
-            Console.WriteLine($"Error while fetching PATCH /machines: {machinesResponse.Error}");
+            Console.WriteLine($"Error while fetching PUT /machines: {machinesResponse.Error}");
 
         return machinesResponse;
     }

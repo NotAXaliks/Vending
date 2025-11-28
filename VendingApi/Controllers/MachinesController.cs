@@ -36,7 +36,8 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
 
         if (!string.IsNullOrWhiteSpace(dto.Filter))
         {
-            machinesQuery = machinesQuery.Where(m => m.Name.ToUpper().Contains(dto.Filter.ToUpper()));
+            machinesQuery =
+                machinesQuery.Where(m => m.Name.ToUpper().Contains(dto.Filter.ToUpper()));
         }
 
         var foundMachinesCount = await machinesQuery.CountAsync();
@@ -51,7 +52,7 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Location: m.Location,
             Address: m.Address,
             Coordinates: m.Coordinates,
-            PaymentType: m.PaymentType,
+            PaymentTypes: m.PaymentTypes,
             TotalEarn: m.TotalEarn,
             SerialNumber: m.SerialNumber,
             InventoryNumber: m.InventoryNumber,
@@ -63,7 +64,7 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Notes: m.Notes,
             EntryDate: m.EntryDate.ToUnixTimeSeconds(),
             ManufactureDate: m.ManufactureDate.ToUnixTimeSeconds(),
-            StartDate: m.StartDate.ToUnixTimeSeconds(),
+            StartDate: m.StartDate?.ToUnixTimeSeconds(),
             LastMaintenanceDate: m.LastMaintenanceDate?.ToUnixTimeSeconds(),
             NextMaintenanceDate: m.NextMaintenanceDate?.ToUnixTimeSeconds(),
             InspectionIntervalMonths: m.InspectionIntervalMonths,
@@ -100,6 +101,11 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
         var model = await DatabaseContext.MachineModels.FindAsync(dto.ModelId);
         if (model == null) return SendError("Model not found");
 
+        if (await DatabaseContext.Machines.AnyAsync(m => m.SerialNumber == dto.SerialNumber && m.InventoryNumber == dto.InventoryNumber))
+        {
+            return SendError("Machine already exists");
+        }
+
         var machine = new Machines
         {
             ModelId = dto.ModelId,
@@ -107,7 +113,7 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             Location = dto.Location,
             Address = dto.Address,
             Coordinates = dto.Coordinates,
-            PaymentType = dto.PaymentType,
+            PaymentTypes = dto.PaymentTypes,
             SerialNumber = dto.SerialNumber,
             InventoryNumber = dto.InventoryNumber,
             Modem = dto.Modem,
@@ -117,12 +123,47 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             WorkMode = dto.WorkMode,
             Notes = dto.Notes,
             ManufactureDate = DateTimeOffset.FromUnixTimeMilliseconds(dto.ManufactureDate),
-            NextMaintenanceDate = dto.NextMaintenanceDate is { } date ? DateTimeOffset.FromUnixTimeMilliseconds(date) : null,
+            NextMaintenanceDate = dto.NextMaintenanceDate is { } date
+                ? DateTimeOffset.FromUnixTimeMilliseconds(date)
+                : null,
         };
 
         await DatabaseContext.Machines.AddAsync(machine);
         await DatabaseContext.SaveChangesAsync();
 
-        return Ok();
+        var machineWithModel = new MachineWithModelDto(
+            Id: machine.Id,
+            Name: machine.Name,
+            Location: machine.Location,
+            Address: machine.Address,
+            Coordinates: machine.Coordinates,
+            PaymentTypes: machine.PaymentTypes,
+            TotalEarn: machine.TotalEarn,
+            SerialNumber: machine.SerialNumber,
+            InventoryNumber: machine.InventoryNumber,
+            Modem: machine.Modem,
+            WorkTime: machine.WorkTime,
+            Timezone: machine.Timezone,
+            Priority: machine.Priority,
+            WorkMode: machine.WorkMode,
+            Notes: machine.Notes,
+            EntryDate: machine.EntryDate.ToUnixTimeSeconds(),
+            ManufactureDate: machine.ManufactureDate.ToUnixTimeSeconds(),
+            StartDate: machine.StartDate?.ToUnixTimeSeconds(),
+            LastMaintenanceDate: machine.LastMaintenanceDate?.ToUnixTimeSeconds(),
+            NextMaintenanceDate: machine.NextMaintenanceDate?.ToUnixTimeSeconds(),
+            InspectionIntervalMonths: machine.InspectionIntervalMonths,
+            ResourceHours: machine.ResourceHours,
+            Status: machine.Status,
+            LastMaintenanceId: machine.LastMaintenanceId,
+            Model: new MachineModelDto(
+                Id: machine.Model.Id,
+                Name: machine.Model.Name,
+                Manufacturer: machine.Model.Manufacturer,
+                OriginCounty: machine.Model.Country
+            )
+        );
+
+        return SendData(machineWithModel);
     }
 }

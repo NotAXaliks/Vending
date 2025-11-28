@@ -12,7 +12,7 @@ public record MachineDto(
     string Location,
     string Address,
     string? Coordinates,
-    MachinePaymentType PaymentType,
+    MachinePaymentType[] PaymentTypes,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
@@ -24,7 +24,7 @@ public record MachineDto(
     string? Notes,
     long EntryDate,
     long ManufactureDate,
-    long StartDate,
+    long? StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -39,7 +39,7 @@ public record MachineWithModelDto(
     string Location,
     string Address,
     string? Coordinates,
-    MachinePaymentType PaymentType,
+    MachinePaymentType[] PaymentTypes,
     decimal TotalEarn,
     string SerialNumber,
     string InventoryNumber,
@@ -51,7 +51,7 @@ public record MachineWithModelDto(
     string? Notes,
     long EntryDate,
     long ManufactureDate,
-    long StartDate,
+    long? StartDate,
     long? LastMaintenanceDate,
     long? NextMaintenanceDate,
     int? InspectionIntervalMonths,
@@ -84,7 +84,7 @@ public class CreateMachineRequestDto
 
     public string? Coordinates { get; set; }
 
-    public required MachinePaymentType PaymentType { get; set; }
+    public required MachinePaymentType[] PaymentTypes { get; set; }
 
     [Required] public required string SerialNumber { get; set; }
     [Required] public required string InventoryNumber { get; set; }
@@ -103,5 +103,5 @@ public class CreateMachineRequestDto
 
     [Required] public long ManufactureDate { get; set; }
     
-    [Required] public long? NextMaintenanceDate { get; set; }
+    public long? NextMaintenanceDate { get; set; }
 }
