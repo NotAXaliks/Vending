@@ -1,15 +1,19 @@
 using System;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
+using VendingDesktop.Dtos;
 using VendingDesktop.ViewModels;
 
 namespace VendingDesktop.Views;
 
 public partial class MainWindow : Window
 {
-    public MainWindow()
+    public MainWindow(UserDto user)
     {
         InitializeComponent();
+
+        DataContext = new MainWindowViewModel(user);
     }
 
     private void OnAccountPopupClosed(object? sender, EventArgs e)

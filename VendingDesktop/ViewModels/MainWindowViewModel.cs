@@ -5,11 +5,14 @@ using Avalonia.Controls;
 using Avalonia.Media;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using VendingDesktop.Dtos;
 
 namespace VendingDesktop.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
+public partial class MainWindowViewModel(UserDto user) : ViewModelBase
 {
+    [ObservableProperty] private UserDto _user = user;
+
     [ObservableProperty] private bool _isAccountPageListOpen;
 
     [ObservableProperty] private bool _isPageListOpen = true;

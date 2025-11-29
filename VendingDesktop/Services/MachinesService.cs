@@ -4,7 +4,7 @@ using VendingDesktop.Dtos;
 
 namespace VendingDesktop.services;
 
-public class MachinesService
+public static class MachinesService
 {
     public static async Task<ApiResponse<GetMachinesResponse>> GetMachines(GetMachinesRequest request)
     {

@@ -22,7 +22,8 @@ public static class NetService
         }
         catch (HttpRequestException error)
         {
-            return new ApiResponse<T>(default, $"Request Error: {error}");
+            return new ApiResponse<T>(default,
+                error.Message.Contains("Connection refused") ? "Connection error" : error.ToString());
         }
         catch (Exception error)
         {
@@ -42,7 +43,8 @@ public static class NetService
         }
         catch (HttpRequestException error)
         {
-            return new ApiResponse<T>(default, $"Request Error: {error}");
+            return new ApiResponse<T>(default,
+                error.Message.Contains("Connection refused") ? "Connection error" : error.ToString());
         }
         catch (Exception error)
         {
@@ -62,14 +64,15 @@ public static class NetService
         }
         catch (HttpRequestException error)
         {
-            return new ApiResponse<T>(default, $"Request Error: {error}");
+            return new ApiResponse<T>(default,
+                error.Message.Contains("Connection refused") ? "Connection error" : error.ToString());
         }
         catch (Exception error)
         {
             return new ApiResponse<T>(default, $"Unknown Error: {error}");
         }
     }
-    
+
     public static async Task<ApiResponse<T>> Put<T>(string path, object? data = null)
     {
         try
@@ -82,7 +85,8 @@ public static class NetService
         }
         catch (HttpRequestException error)
         {
-            return new ApiResponse<T>(default, $"Request Error: {error}");
+            return new ApiResponse<T>(default,
+                error.Message.Contains("Connection refused") ? "Connection error" : error.ToString());
         }
         catch (Exception error)
         {

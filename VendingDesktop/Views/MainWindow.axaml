@@ -14,10 +14,6 @@
         <cv:ArrowAngleConverter x:Key="ArrowAngleConverter" />
     </Window.Resources>
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel />
-    </Design.DataContext>
-
     <Grid x:Name="MainGrid" RowDefinitions="50 *">
         <Grid Grid.Row="0" Background="White" ColumnDefinitions="Auto * Auto">
             <Image Grid.Column="0" Height="40" Margin="10 0 0 0"
@@ -68,8 +64,8 @@
                         <Path Data="M0 0h42v30H0z" Fill="#0039a6" />
 
                         <StackPanel>
-                            <TextBlock Text="Автоматoв А.А." FontWeight="Bold" Foreground="Black" />
-                            <TextBlock Text="Администратор" FontSize="12" Foreground="Gray" />
+                            <TextBlock Text="{Binding User.FullName}" FontWeight="Bold" Foreground="Black" />
+                            <TextBlock Text="{Binding User.LocalizeRole}" FontSize="12" Foreground="Gray" />
                         </StackPanel>
 
                         <PathIcon Data="{StaticResource ArrowDown}" Height="12" Width="12">

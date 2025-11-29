@@ -1,0 +1,35 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:VendingDesktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Width="350" Height="240"
+        Icon="/Assets/avalonia-logo.ico"
+        x:Class="VendingDesktop.Views.LoginWindow"
+        x:DataType="vm:LoginWindowViewModel"
+        Title="Вход">
+    <StackPanel Margin="15" Spacing="25">
+        <StackPanel>
+            <TextBlock Text="Почта" FontSize="18" FontWeight="Black" HorizontalAlignment="Center" />
+            <TextBox Width="300" Text="{Binding Email}" />
+        </StackPanel>
+
+        <StackPanel>
+            <TextBlock Text="Пароль" FontSize="18" FontWeight="Black" HorizontalAlignment="Center" />
+            <TextBox Width="300" HorizontalAlignment="Center" PasswordChar="*" Text="{Binding Password}" />
+        </StackPanel>
+
+        <StackPanel>
+            <Button Background="{DynamicResource PrimaryColor}" HorizontalAlignment="Center" FontSize="18"
+                    Foreground="White" Width="100" HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Height="35" Click="OnEnterClick">
+                Войти
+            </Button>
+
+            <TextBlock Foreground="Red" Name="ErrorText" FontSize="14" HorizontalAlignment="Center"
+                       FontWeight="SemiBold" Margin="5 2 0 0" />
+        </StackPanel>
+    </StackPanel>
+</Window>

@@ -34,7 +34,9 @@ public partial class AddMachinesModalViewModel : ViewModelBase
 
     [ObservableProperty] private string _currentDate = DateTimeOffset.Now.ToString("dd.MM.yyyy");
     [ObservableProperty] private string? _nextMaintenanceDateString;
-    [ObservableProperty] private string _manufactureDateString = DateTimeOffset.Now.AddMonths(-1).ToString("dd.MM.yyyy");
+
+    [ObservableProperty]
+    private string _manufactureDateString = DateTimeOffset.Now.AddMonths(-1).ToString("dd.MM.yyyy");
 
     public string[] ManufacturerOptions { get; set; } = ["Manufacturer1", "Manufacturer2", "Manufacturer3"];
     public ObservableCollection<ModelOptionTemplate> ModelOptions { get; set; } = [new("Model1", 1), new("Model2", 2)];
@@ -86,7 +88,8 @@ public partial class AddMachinesModalViewModel : ViewModelBase
         if (string.IsNullOrWhiteSpace(Location)) errors.Add("Поле \"Место\" должно быть указано");
         if (string.IsNullOrWhiteSpace(InventoryNumber)) errors.Add("Поле \"Инвентарный номер\" должно быть указано");
         if (string.IsNullOrWhiteSpace(SerialNumber)) errors.Add("Поле \"Серийный номер\" должно быть указано");
-        if (string.IsNullOrWhiteSpace(ManufactureDateString)) errors.Add("Поле \"Дата производства\" должно быть указано");
+        if (string.IsNullOrWhiteSpace(ManufactureDateString))
+            errors.Add("Поле \"Дата производства\" должно быть указано");
         if (string.IsNullOrWhiteSpace(ProductMatrix)) errors.Add("Поле \"Товарная матрица\" должно быть указано");
         if (!PaymentOptions.Any(p => p.IsChecked))
             errors.Add("Хотя бы один элемент из поля \"Платежные системы\" должен быть выбран!");
