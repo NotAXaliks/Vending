@@ -81,3 +81,32 @@ a {
   justify-content: center;
   align-items: center;
 }
+
+.page {
+  height: 100vh;
+  width: 100vw;
+}
+
+.machinesPage {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.machineFileUploadContainer {
+  width: 70%;
+  height: 50%;
+}
+
+.machineFileUpload {
+  width: 100%;
+  height: 100%;
+}
+
+.machineFileUpload input[type='file'] {
+  border: 1px solid #ccc;
+  width: 100%;
+  height: 100%;
+
+  display: none;
+}
