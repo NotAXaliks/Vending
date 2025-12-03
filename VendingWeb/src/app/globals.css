@@ -1,6 +1,7 @@
 :root {
   --background: #2e2e2e;
   --foreground: #ededed;
+  --primaryColor: rgb(31, 153, 224);
 }
 
 html,
@@ -21,6 +22,7 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  border: none;
 }
 
 a {
@@ -28,10 +30,26 @@ a {
   text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+.buttonPrimary {
+  padding: 6px;
+  border-radius: 10%;
+
+  cursor: pointer;
+  background-color: var(--primaryColor);
+}
+
+.buttonPrimary:hover {
+  opacity: 0.9;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
+  outline: 0;
 }
 
 .headerContainer {
@@ -39,6 +57,7 @@ a {
   background-color: blue;
 
   display: flex;
+  gap: 3px;
 }
 
 .headerChild {
@@ -49,7 +68,6 @@ a {
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-right: 5px;
 }
 
 .headerChild:hover:not(.selectedHeaderChild) {
@@ -85,10 +103,16 @@ a {
   display: flex;
   place-content: center;
   flex-direction: column;
+
+  gap: 20px;
 }
 
 .machinesTable {
   place-self: center;
+
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .machinesTableHeaderContainer {
@@ -128,6 +152,12 @@ a {
 .machinesTable tbody tr th {
   font-weight: 500;
   font-size: 16px;
+}
+
+.machinesPageAddButon {
+  float: right;
+  font-size: 18px;
+  color: #ededed;
 }
 
 .machineFileUploadContainer {

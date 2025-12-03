@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/button";
 import { MachinesTable } from "@/components/machinesPage/table";
 import { fetchApi } from "@/services/netService";
 import { useEffect, useState } from "react";
@@ -99,7 +100,17 @@ export default function Page() {
 
   return (
     <div className="machinesPage">
-      <MachinesTable columns={columns} headers={headers} machines={machines} />
+      <div className="machinesTable">
+        <div className="machinesPageActions">
+          <Button className={"machinesPageAddButon"} text={"Добавить"} onClick={() => console.log("Clicked")} />
+        </div>
+
+        <MachinesTable
+          columns={columns}
+          headers={headers}
+          machines={machines}
+        />
+      </div>
       {/* <div className="machineFileUploadContainer">
         <form onSubmit={handleSubmit} className="machineFileUpload">
           <input type="file" name="file" />

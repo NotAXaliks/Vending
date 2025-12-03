@@ -70,7 +70,7 @@ function MachinesTable({ headers, columns, machines }) {
   };
 
   return (
-    <table className="machinesTable">
+    <table>
       <thead>
         <tr className="machinesTableHeaderContainer">
           {headers.map((headerId) => {
