@@ -1,5 +1,28 @@
 import { useState } from "react";
 
+function MachinesTableValue({ headers, machine, formatted }) {
+  const statusColor = {
+    Operational: "green",
+    Broken: "red",
+    InService: "yellow",
+  }[machine.Status];
+
+  return (
+    <tr className="machinesTableBodyContainer">
+      {headers.map((headerId) => {
+        if (headerId === "Status")
+          return (
+            <th key={headerId} style={{ background: statusColor }}>
+              {formatted.Status}
+            </th>
+          );
+
+        return <th key={headerId}>{formatted[headerId]}</th>;
+      })}
+    </tr>
+  );
+}
+
 function MachinesTable({ headers, columns, machines }) {
   const [sortByColumns, setSortByColumns] = useState([]);
 
@@ -61,35 +84,23 @@ function MachinesTable({ headers, columns, machines }) {
                 className="machinesTableHeaderCell"
               >
                 <span className="machinesTableHeaderText">{header.name}</span>
-                <span className="machinesTableHeaderIcon">{sort ? sort.sort === "desc" ? "▼" : "▲" : "≡"}</span>
+                <span className="machinesTableHeaderIcon">
+                  {sort ? (sort.sort === "desc" ? "▼" : "▲") : "≡"}
+                </span>
               </th>
             );
           })}
         </tr>
       </thead>
       <tbody>
-        {sortedMachines.map(({ machine, formatted }) => {
-          const statusColor = {
-            Operational: "green",
-            Broken: "red",
-            InService: "yellow",
-          }[machine.Status];
-
-          return (
-            <tr key={machine.Id} className="machinesTableBodyContainer">
-              {headers.map((headerId) => {
-                if (headerId === "Status")
-                  return (
-                    <th key={headerId} style={{ background: statusColor }}>
-                      {formatted.Status}
-                    </th>
-                  );
-
-                return <th key={headerId}>{formatted[headerId]}</th>;
-              })}
-            </tr>
-          );
-        })}
+        {sortedMachines.map(({ machine, formatted }) => (
+          <MachinesTableValue
+            key={machine.Id}
+            headers={headers}
+            machine={machine}
+            formatted={formatted}
+          />
+        ))}
       </tbody>
     </table>
   );

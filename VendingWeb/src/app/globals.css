@@ -100,6 +100,7 @@ a {
 .machinesTableHeaderCell {
   position: relative;
   cursor: pointer;
+  user-select: none;
 }
 
 .machinesTableHeaderText {
