@@ -1,11 +1,11 @@
 "use client";
 
+import { MachinesTable } from "@/components/machinesPage/table";
 import { fetchApi } from "@/services/netService";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Page() {
   const [machines, setMachines] = useState([]);
-  const [sortByColumns, setSortByColumns] = useState([{ key: "Name", sort: "desc" }]);
 
   useEffect(() => {
     fetchApi("/machines", "POST", {}).then((data) => {
@@ -69,32 +69,6 @@ export default function Page() {
     },
   };
 
-  const formattedMachines = machines.map((machine) => {
-    const object = { machine, formatted: {} };
-    for (const headerId of headers) {
-      const column = columns[headerId];
-      object.formatted[headerId] = (column.stringValue || column.value)(machine);
-    }
-    return object;
-  });
-
-  let sortedMachines = formattedMachines;
-  for (const { key, sort } of sortByColumns) {
-    sortedMachines = sortedMachines.sort((a, b) => {
-      const aValue = a.formatted[key];
-      const bValue = b.formatted[key];
-
-      if (sort === "desc") return bValue.localeCompare(aValue);
-      if (sort === "asc") return aValue.localeCompare(bValue);
-
-      return 0;
-    });
-  }
-
-  const setSortBy = (headerId) => {
-    console.log(headerId);
-  }
-
   // const [message, setMessage] = useState("");
 
   // const uploadFile = async (formData) => {
@@ -125,35 +99,7 @@ export default function Page() {
 
   return (
     <div className="machinesPage">
-      <table className="machinesTable">
-        <thead>
-          <tr>
-            {headers.map((headerId) => {
-              const header = columns[headerId];
-              return (
-                <th onClick={() => setSortBy(headerId)}>{header.name}</th>
-              );
-            })}
-          </tr>
-        </thead>
-        <tbody>
-          {sortedMachines.map(({ machine, formatted }) => {
-            const statusColor = {
-              Operational: "green",
-              Broken: "red",
-              InService: "yellow",
-            }[machine.Status];
-
-            return (<tr key={machine.Id}>
-              {headers.map((headerId) => {
-                if (headerId === "Status") return (<th style={{ background: statusColor }}>{formatted.Status}</th>)
-
-                return (<th>{formatted[headerId]}</th>)
-              })}
-            </tr>)
-          })}
-        </tbody>
-      </table>
+      <MachinesTable columns={columns} headers={headers} machines={machines} />
       {/* <div className="machineFileUploadContainer">
         <form onSubmit={handleSubmit} className="machineFileUpload">
           <input type="file" name="file" />

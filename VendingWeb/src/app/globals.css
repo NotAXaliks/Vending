@@ -91,27 +91,42 @@ a {
   place-self: center;
 }
 
-.machinesTable thead tr {
+.machinesTableHeaderContainer {
   background-color: #575757;
   height: 40px;
   font-size: 18px;
+}
+
+.machinesTableHeaderCell {
+  position: relative;
+  cursor: pointer;
+}
+
+.machinesTableHeaderText {
+  padding-right: 20px;
+}
+
+.machinesTableHeaderIcon {
+  position: absolute;
+  right: 7px;
+  font-size: 20px;
 }
 
 .machinesTable tr th {
   padding: 10px;
 }
 
-.machinesTable tbody tr th {
-  font-weight: 500;
-  font-size: 16px;
+.machinesTableBodyContainer {
+  background-color: #444444;
 }
 
-.machinesTable tbody tr:nth-child(even) {
+.machinesTableBodyContainer:nth-child(even) {
   background-color: #575757;
 }
 
-.machinesTable tbody tr:nth-child(odd) {
-  background-color: #444444;
+.machinesTable tbody tr th {
+  font-weight: 500;
+  font-size: 16px;
 }
 
 .machineFileUploadContainer {
