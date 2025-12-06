@@ -91,13 +91,13 @@ public class CreateMachineRequestDto
 
     public string? Modem { get; set; }
 
-    public required string WorkTime { get; set; }
+    public string? WorkTime { get; set; }
 
-    public required MachineTimezone Timezone { get; set; }
+    public MachineTimezone? Timezone { get; set; }
 
-    public required MachinePriority Priority { get; set; }
+    public MachinePriority? Priority { get; set; }
 
-    public required MachineWorkMode WorkMode { get; set; }
+    public MachineWorkMode? WorkMode { get; set; }
 
     public string? Notes { get; set; }
 

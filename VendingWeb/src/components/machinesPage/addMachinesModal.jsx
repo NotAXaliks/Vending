@@ -2,6 +2,7 @@ import { useState } from "react";
 import csvParser from "csv-parser";
 import { Modal } from "../modal";
 import { Readable } from "stream";
+import { fetchApi } from "@/services/netService";
 
 function webStreamToNodeStream(webStream) {
   const reader = webStream.getReader();
@@ -16,7 +17,7 @@ function webStreamToNodeStream(webStream) {
   });
 }
 
-function AddMachinesModal({ isOpen, onClose }) {
+function UploadForm() {
   const [message, setMessage] = useState("");
 
   const requiredColumns = [
@@ -76,21 +77,21 @@ function AddMachinesModal({ isOpen, onClose }) {
           if (!paymentTypes.length) return;
 
           const fullData = {
-            name: data.name,
-            modelId: data.modelId,
-            location: data.location,
-            address: data.address,
-            serialNumber: data.serialNumber,
-            inventoryNumber: data.inventoryNumber,
-            paymentTypes,
+            Name: data.name,
+            ModelId: data.modelId,
+            Location: data.location,
+            Address: data.address,
+            SerialNumber: data.serialNumber,
+            InventoryNumber: data.inventoryNumber,
+            PaymentTypes: paymentTypes,
           };
 
           if (data.timezone && requiredTimezones.includes(data.timezone)) {
-            fullData.timezone = data.timezone;
+            fullData.Timezone = data.timezone;
           }
 
           if (data.priority && requiredPriorities.includes(data.priority)) {
-            fullData.priority = data.priority;
+            fullData.Priority = data.priority;
           }
 
           rows.push(fullData);
@@ -113,11 +114,28 @@ function AddMachinesModal({ isOpen, onClose }) {
     setMessage(`Загружаем... ${file.name}`);
 
     try {
-      const data = await parseCsvFromStream(
+      const machines = await parseCsvFromStream(
         webStreamToNodeStream(file.stream())
       );
 
-      return setMessage(`Успешно загружено ${data.length} автоматов.`);
+      let successCount = 0;
+      for (let i = 0; i < machines.length; i++) {
+        const machine = machines[i];
+
+        const data = await fetchApi("/machines", "PUT", {
+          ...machine,
+        });
+        if (!data.isSuccess) {
+          console.error(`Ошибка при загрузки аппарата №${i + 1}`, data.error);
+          continue;
+        }
+
+        successCount++;
+
+        setMessage(`Загрузка №${i + 1}...`);
+      }
+
+      return setMessage(`Успешно загружено ${machines.length} автоматов.`);
     } catch (error) {
       console.error("Error uploading file:", error);
       return setMessage("Ошибка при загрузке файла");
@@ -125,19 +143,27 @@ function AddMachinesModal({ isOpen, onClose }) {
   };
 
   return (
+    <form className="machineFileUpload">
+      <input
+        id="file"
+        type="file"
+        name="file"
+        className="fileInput"
+        onChange={handleFileSelect}
+      />
+      <label htmlFor="file">
+        <p>{message || "Загрузите файл .csv"}</p>
+      </label>
+    </form>
+  );
+}
+
+function AddMachinesModal({ isOpen, onClose }) {
+  const [] = useState(true);
+
+  return (
     <Modal name="Добавить аппараты" open={isOpen} onClose={onClose}>
-      <form className="machineFileUpload">
-        <input
-          id="file"
-          type="file"
-          name="file"
-          className="fileInput"
-          onChange={handleFileSelect}
-        />
-        <label htmlFor="file">
-          <p>{message || "Загрузите файл .csv"}</p>
-        </label>
-      </form>
+      <UploadForm />
     </Modal>
   );
 }

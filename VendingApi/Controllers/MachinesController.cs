@@ -101,7 +101,7 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
         var model = await DatabaseContext.MachineModels.FindAsync(dto.ModelId);
         if (model == null) return SendError("Model not found");
 
-        if (await DatabaseContext.Machines.AnyAsync(m => m.SerialNumber == dto.SerialNumber && m.InventoryNumber == dto.InventoryNumber))
+        if (await DatabaseContext.Machines.AnyAsync(m => m.SerialNumber == dto.SerialNumber || m.InventoryNumber == dto.InventoryNumber))
         {
             return SendError("Machine already exists");
         }
@@ -118,9 +118,9 @@ public class MachinesController(AppDbContext databaseContext, IConfiguration con
             InventoryNumber = dto.InventoryNumber,
             Modem = dto.Modem,
             WorkTime = dto.WorkTime,
-            Timezone = dto.Timezone,
-            Priority = dto.Priority,
-            WorkMode = dto.WorkMode,
+            Timezone = dto.Timezone ?? MachineTimezone.UTC3,
+            Priority = dto.Priority ?? MachinePriority.Medium,
+            WorkMode = dto.WorkMode ?? MachineWorkMode.Standart,
             Notes = dto.Notes,
             ManufactureDate = DateTimeOffset.FromUnixTimeMilliseconds(dto.ManufactureDate),
             NextMaintenanceDate = dto.NextMaintenanceDate is { } date
