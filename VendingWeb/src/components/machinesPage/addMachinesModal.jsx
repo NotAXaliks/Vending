@@ -17,7 +17,7 @@ function webStreamToNodeStream(webStream) {
   });
 }
 
-function UploadForm() {
+function UploadForm({ onFileLoad, onErrors }) {
   const [message, setMessage] = useState("");
 
   const requiredColumns = [
@@ -62,19 +62,22 @@ function UploadForm() {
   const parseCsvFromStream = (stream) => {
     return new Promise((resolve, reject) => {
       const rows = [];
+      const errors = [];
 
+      let line = 0;
       stream
         .pipe(csvParser())
         .on("data", (data) => {
+          line++;
           if (!requiredColumns.every((column) => column in data))
             throw new Error(
               `Неверные заголовки. Необходимы: ${requiredColumns.join(", ")}`
             );
 
-          const paymentTypes = requiredPaymentTypes.filter((type) =>
-            data.paymentTypes.includes(type)
-          );
-          if (!paymentTypes.length) return;
+          if (!data.paymentTypes.length) return errors.push({ line, error: "Необходим хотя бы один paymentTypes." })
+          if (data.paymentTypes.some(type => !requiredPaymentTypes.includes(type))) {
+            return errors.push({ line, error: `Неверный paymentTypes. Ожидается: ${requiredPaymentTypes.join("/")}. Получено: ${data.paymentTypes.join("/")}` });
+          }  
 
           const fullData = {
             Name: data.name,
@@ -83,20 +86,22 @@ function UploadForm() {
             Address: data.address,
             SerialNumber: data.serialNumber,
             InventoryNumber: data.inventoryNumber,
-            PaymentTypes: paymentTypes,
+            PaymentTypes: data.paymentTypes,
           };
 
-          if (data.timezone && requiredTimezones.includes(data.timezone)) {
-            fullData.Timezone = data.timezone;
+          if (data.timezone) {
+            if (!requiredTimezones.includes(data.timezone)) errors.push({ line, error: `Неверный timezone. Установлено значение по умолчанию.` })
+            else fullData.Timezone = data.timezone;
           }
 
-          if (data.priority && requiredPriorities.includes(data.priority)) {
-            fullData.Priority = data.priority;
+          if (data.priority) {
+            if (!requiredPriorities.includes(data.priority)) errors.push({ line, error: `Неверный priority. Установлено значение по умолчанию.` })
+            else fullData.Priority = data.priority;
           }
 
           rows.push(fullData);
         })
-        .on("end", () => resolve(rows))
+        .on("end", () => resolve({ rows, errors }))
         .on("error", (error) => reject(error));
     });
   };
@@ -114,7 +119,7 @@ function UploadForm() {
     setMessage(`Загружаем... ${file.name}`);
 
     try {
-      const machines = await parseCsvFromStream(
+      const { rows: machines, errors } = await parseCsvFromStream(
         webStreamToNodeStream(file.stream())
       );
 
@@ -134,6 +139,9 @@ function UploadForm() {
 
         setMessage(`Загрузка №${i + 1}...`);
       }
+
+      onErrors();
+      onFileLoad(machines);
 
       return setMessage(`Успешно загружено ${machines.length} автоматов.`);
     } catch (error) {
@@ -159,11 +167,15 @@ function UploadForm() {
 }
 
 function AddMachinesModal({ isOpen, onClose }) {
-  const [] = useState(true);
+  const [uploadFormOpened, setUploadFormOpened] = useState(true);
+
+  const onFileLoad = () => {
+
+  }
 
   return (
     <Modal name="Добавить аппараты" open={isOpen} onClose={onClose}>
-      <UploadForm />
+      <UploadForm onFileLoad={onFileLoad} onErrors={onErrors} />
     </Modal>
   );
 }
