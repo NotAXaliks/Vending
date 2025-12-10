@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import UserState from "@/context";
 import { Header } from "@/components/mainPage/header";
+import { ConfigProvider, theme } from "antd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,13 +23,24 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <UserState>
-          <Header />
+        <ConfigProvider theme={{
+          algorithm: theme.darkAlgorithm, components: {
+            Table: {
+              colorBgContainer: "#444444",
+              colorText: "#fff",
+              headerBg: "#575757",
+              headerColor: "#fff",
+            }
+          }
+        }}>
+          <UserState>
+            <Header />
 
-          <div className="page">
-            {children}
-          </div>
-        </UserState>
+            <div className="page">
+              {children}
+            </div>
+          </UserState>
+        </ConfigProvider>
       </body>
     </html>
   );

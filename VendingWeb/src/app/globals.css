@@ -141,44 +141,6 @@ a {
   gap: 20px;
 }
 
-.machinesTable {
-  place-self: center;
-
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.machinesTableHeaderContainer {
-  background-color: #575757;
-  height: 40px;
-  font-size: 18px;
-}
-
-.machinesTableHeaderCell {
-  position: relative;
-  cursor: pointer;
-  user-select: none;
-}
-
-.machinesTableHeaderText {
-  padding-right: 20px;
-}
-
-.machinesTableHeaderIcon {
-  position: absolute;
-  right: 7px;
-  font-size: 20px;
-}
-
-.machinesTable tr th {
-  padding: 10px;
-}
-
-.machinesTableBodyContainer {
-  background-color: #444444;
-}
-
 .machinesTableBodyContainer:nth-child(even) {
   background-color: #575757;
 }

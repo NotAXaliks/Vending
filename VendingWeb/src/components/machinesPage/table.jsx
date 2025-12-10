@@ -1,108 +1,98 @@
-import { useState } from "react";
+import { Table } from "antd";
+import { fetchApi } from "@/services/netService";
+import { useEffect, useState } from "react";
 
-function MachinesTableValue({ headers, machine, formatted }) {
-  const statusColor = {
-    Operational: "green",
-    Broken: "red",
-    InService: "yellow",
-  }[machine.Status];
+function MachinesTable() {
+  const [machines, setMachines] = useState([]);
 
-  return (
-    <tr className="machinesTableBodyContainer">
-      {headers.map((headerId) => {
-        if (headerId === "Status")
-          return (
-            <th key={headerId} style={{ background: statusColor }}>
-              {formatted.Status}
-            </th>
-          );
+  useEffect(() => {
+    fetchApi("/machines", "POST", {}).then((data) => {
+      if (!data.isSuccess)
+        return console.error(
+          "Ошибка при получении списка аппаратов",
+          data.error
+        );
 
-        return <th key={headerId}>{formatted[headerId]}</th>;
-      })}
-    </tr>
-  );
-}
-
-function MachinesTable({ headers, columns, machines }) {
-  const [sortByColumns, setSortByColumns] = useState([]);
-
-  const formattedMachines = machines.map((machine) => {
-    const object = { machine, formatted: {} };
-    for (const headerId of headers) {
-      const column = columns[headerId];
-      object.formatted[headerId] = (column.stringValue || column.value)(
-        machine
-      );
-    }
-    return object;
-  });
-
-  let sortedMachines = formattedMachines;
-  for (const { key, sort } of sortByColumns) {
-    sortedMachines = sortedMachines.sort((a, b) => {
-      const aValue = a.formatted[key];
-      const bValue = b.formatted[key];
-
-      if (sort === "desc") return bValue.localeCompare(aValue);
-      if (sort === "asc") return aValue.localeCompare(bValue);
-
-      return 0;
+      setMachines(data.data.Machines);
     });
-  }
+  }, []);
 
-  const setSortBy = (headerId) => {
-    const currentSort = sortByColumns.find(({ key }) => key === headerId);
-    if (!currentSort)
-      return setSortByColumns([
-        ...sortByColumns,
-        { key: headerId, sort: "desc" },
-      ]);
-
-    const sortWithoutHeader = sortByColumns.filter(
-      ({ key }) => key !== headerId
-    );
-    if (currentSort.sort === "asc") return setSortByColumns(sortWithoutHeader);
-
-    return setSortByColumns([
-      ...sortWithoutHeader,
-      { key: headerId, sort: "asc" },
-    ]);
+  const statusRowData = {
+    Operational: { name: "Работает", color: "green" },
+    Broken: { name: "Сломан", color: "red" },
+    InService: { name: "На обслуживании", color: "yellow" },
   };
 
-  return (
-    <table>
-      <thead>
-        <tr className="machinesTableHeaderContainer">
-          {headers.map((headerId) => {
-            const header = columns[headerId];
-            const sort = sortByColumns.find(({ key }) => key === headerId);
+  const columns = [
+    {
+      title: "Статус",
+      dataIndex: "Status",
+      filters: Object.entries(statusRowData).map(([id, { name }]) => ({
+        text: name,
+        value: id,
+      })),
+      onCell: (machine) => {
+        return {
+          style: {
+            backgroundColor: statusRowData[machine.Status].color,
+          },
+        };
+      },
+      render: (status) => {
+        return statusRowData[status].name;
+      },
+    },
+    {
+      title: "Название автомата",
+      dataIndex: "Name",
+      sorter: (a, b) => a.Name.localeCompare(b.name),
+    },
+    {
+      title: "Модель",
+      dataIndex: ["Model", "Name"],
+      sorter: (a, b) => a.Model.Name.localeCompare(b.Model.Name),
+    },
+    {
+      title: "Производитель",
+      dataIndex: ["Model", "Manufacturer"],
+      sorter: (a, b) =>
+        a.Model.Manufacturer.localeCompare(b.Model.Manufacturer),
+    },
+    {
+      title: "Адрес / Место",
+      dataIndex: "Location",
+      render: (_, machine) => `${machine.Address} ${machine.Location}`,
+      sorter: (a, b) =>
+        `${a.Address} ${a.Location}`.localeCompare(
+          `${b.Address} ${b.Location}`
+        ),
+    },
+    {
+      title: "В работе с",
+      dataIndex: "WorkSince",
+      render: (_, machine) =>
+        machine.StartDate
+          ? new Date(machine.StartDate).toLocaleDateString()
+          : "Не установлено",
+      sorter: (a, b) => a.StartDate - b.StartDate,
+    },
+    {
+      title: "Следующее обслуживание",
+      dataIndex: "NextMaintenance",
+      render: (_, machine) =>
+        machine.NextMaintenanceDate
+          ? new Date(machine.NextMaintenanceDate).toLocaleDateString()
+          : "Не установлено",
+      sorter: (a, b) => a.StartDate - b.StartDate,
+    },
+  ];
 
-            return (
-              <th
-                key={headerId}
-                onClick={() => setSortBy(headerId)}
-                className="machinesTableHeaderCell"
-              >
-                <span className="machinesTableHeaderText">{header.name}</span>
-                <span className="machinesTableHeaderIcon">
-                  {sort ? (sort.sort === "desc" ? "▼" : "▲") : "≡"}
-                </span>
-              </th>
-            );
-          })}
-        </tr>
-      </thead>
-      <tbody>
-        {sortedMachines.map(({ machine, formatted }) => (
-          <MachinesTableValue
-            key={machine.Id}
-            headers={headers}
-            machine={machine}
-            formatted={formatted}
-          />
-        ))}
-      </tbody>
-    </table>
+  return (
+    <Table
+      columns={columns}
+      dataSource={machines}
+      rowKey={(record) => record.Id}
+    />
   );
 }
 
