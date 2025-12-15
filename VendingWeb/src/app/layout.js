@@ -1,18 +1,7 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import UserState from "@/context";
 import { Header } from "@/components/mainPage/header";
-import { ConfigProvider, theme } from "antd";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import { ConfigProvider, Layout, theme } from "antd";
 
 export const metadata = {
   title: "Франчайзер",
@@ -22,7 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body>
         <ConfigProvider theme={{
           algorithm: theme.darkAlgorithm, components: {
             Table: {
@@ -34,7 +23,9 @@ export default function RootLayout({ children }) {
           }
         }}>
           <UserState>
-            <Header />
+            <Layout>
+              <Header />
+            </Layout>
 
             <div className="page">
               {children}

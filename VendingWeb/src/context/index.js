@@ -5,7 +5,7 @@ import { createContext, useState } from "react";
 export const UserContext = createContext(null);
 
 export default function UserState({ children }) {
-  const [openedPage, setOpenPage] = useState("machines");
+  const [openedPage, setOpenPage] = useState("/machines");
   const [language, setLanguage] = useState("ru");
 
   return (

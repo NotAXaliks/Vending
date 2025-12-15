@@ -1,8 +1,8 @@
 "use client";
 
-import { Button } from "@/components/button";
 import { AddMachinesModal } from "@/components/machinesPage/addMachinesModal";
 import { MachinesTable } from "@/components/machinesPage/table";
+import { Button, Flex } from "antd";
 import { useState } from "react";
 
 export default function Page() {
@@ -10,23 +10,20 @@ export default function Page() {
 
   return (
     <div className="machinesPage">
-      <div className="machinesTable">
-        <div className="machinesPageActions">
-          <Button
-            className={"machinesPageAddButon"}
-            text={"Добавить"}
-            onClick={() => setUploadFileModalOpen(true)}
+      <Flex justify="flex-end">
+        <Button
+          type="primary"
+          onClick={() => setUploadFileModalOpen(true)}
+        >Добавить</Button>
+        {uploadFileModalOpen && (
+          <AddMachinesModal
+            isOpen={true}
+            onClose={() => setUploadFileModalOpen(false)}
           />
-          {uploadFileModalOpen && (
-            <AddMachinesModal
-              isOpen={true}
-              onClose={() => setUploadFileModalOpen(false)}
-            />
-          )}
-        </div>
+        )}
+      </Flex>
 
-        <MachinesTable />
-      </div>
+      <MachinesTable />
     </div>
   );
 }
